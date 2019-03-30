@@ -34,6 +34,10 @@ import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.Plot;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.StudyHeader;
+
+import study_examples.vrSMImain.Values;
+//import study_examples.vrSMItester.Signals;
+
 import com.motivewave.platform.sdk.common.X11Colors;
 
 //A Java class that can return multiple values of different types
@@ -44,92 +48,76 @@ import com.motivewave.platform.sdk.common.X11Colors;
 //members of different types 
 
 class SMIinput { 
-	int hlPeriod; // To store the High/Low Period
-	int maPeriod; // To store the period of the moving average
-	int smoothPeriod; // To store the smoothingPeriod
-
-	SMIinput(int hl, int ma, int sp) 
+	public int hlPeriod; // To store the High/Low Period
+	public int maPeriod; // To store the period of the moving average
+	public int smoothPeriod; // To store the smoothingPeriod
+	public Enums.MAMethod method; //= getSettings().getMAMethod(Inputs.METHOD);
+	
+	public DataSeries D; // These values are used for calculating averages and smoothed averages
+	public DataSeries HL;
+	public DataSeries D_MA;
+	public DataSeries HL_MA;
+	
+	public DataSeries SMIds;  //Output ds = DataSeries and Double = d
+	public Double SMId;
+    
+    
+	public SMIinput(int hl, int ma, int sp, Enums.MAMethod meth, 
+			DataSeries Dsig, DataSeries HLsig, DataSeries D_MAsig, DataSeries HL_MAsig,
+			DataSeries SMIsig, Double SMIdouble)  //add ', DataSeries SIGsig' if I want to add signals
 	{ 
-		hlPeriod = hl; 
-		maPeriod = ma; 
-		smoothPeriod = sp; 
+		this.hlPeriod = hl; 
+		this.maPeriod = ma; 
+		this.smoothPeriod = sp; 
+		this.method = meth; 
+		this.D = Dsig;
+		this.HL = HLsig;
+		this.D_MA = D_MAsig;
+		this.HL_MA = HL_MAsig;
+		this.SMIds = SMIsig;
+		this.SMId = SMIdouble;
+
 	} 
 } 
-
-class SMIseries {
-	//Enums.MAMethod method; // = getSettings().getMAMethod(Inputs.METHOD);
-	DataSeries Dsig; // These values are used for calculating averages and smoothed averages
-    DataSeries HLsig;
-    DataSeries D_MAsig;
-    DataSeries HL_MAsig;
-        
-	SMIseries(DataSeries D, DataSeries HL, DataSeries D_MA, DataSeries HL_MA)
-	{
-	Dsig = D;
-	HLsig = HL;
-	D_MAsig = D_MA;
-	HL_MAsig = HL_MA;
-	
-	}
-}
-
-class SMIoutput {
-	//Enums.MAMethod method; // = getSettings().getMAMethod(Inputs.METHOD);
-	DataSeries SMIsig; // These values are used for calculating averages and smoothed averages
-    DataSeries SIGsig;
-    
-	SMIoutput(DataSeries SMI, DataSeries SIG)
-	{
-	SMIsig = SMI;
-	SIGsig = SIG;
-	}
-}
 
 public class vrSMI {
 
-	static SMIoutput getvrSMI(SMIinput a, SMIseries s, int index, DataContext ctx)
+	public static void getvrSMI(SMIinput a, int index, DataContext ctx)
 	{	
-		    if (index < a.hl) return; //return if the index is less than the high period
+		    if (index < a.hlPeriod) return; //return if the index is less than the high period
 
-		    DataSeries series = ctx.getDataSeries();
-		    double HH = series.highest(index, a.hl, Enums.BarInput.HIGH);
-		    double LL = series.lowest(index, a.hl, Enums.BarInput.LOW);
+		    DataSeries series = ctx.getDataSeries();  //data series based on price
+		    
+		    double HH = series.highest(index, a.hlPeriod, Enums.BarInput.HIGH);
+		    double LL = series.lowest(index, a.hlPeriod, Enums.BarInput.LOW);
 		    double M = (HH + LL)/2.0;
 		    double D = series.getClose(index) - M;
 	
-		    series.setDouble(index, s.D, D);
-		    series.setDouble(index, s.HL, HH - LL);
+		    series.setDouble(index, a.D, D);
+		    series.setDouble(index, a.HL , HH - LL);
 	
-		    if (index < a.hl + a.ma) return;
+		    if (index < a.hlPeriod + a.maPeriod) return;
 	
-	
+		    series.setDouble(index, a.D_MA, series.ma(a.method, index, a.maPeriod, a.D));
+		    series.setDouble(index, a.HL_MA, series.ma(a.method, index, a.maPeriod, a.HL));
+		    
+		    if (index < a.hlPeriod + a.maPeriod + a.smoothPeriod) return;
+		    
+		    Double D_SMOOTH = series.ma(a.method, index, a.smoothPeriod, a.D_MA);
+		    Double HL_SMOOTH = series.ma(a.method, index, a.smoothPeriod, a.HL_MA);
+		    
+		    if (D_SMOOTH == null || HL_SMOOTH == null) return;
+		    double HL2 = HL_SMOOTH/2;
+		    a.SMId = 0.0; //double SMI = 0;
+		    if (HL2 != 0) a.SMId = 100 * (D_SMOOTH/HL2);
+		    
+		    series.setDouble(index, a.SMIds, a.SMId);
+		    // Joe - duplicate question, how can cast a.SMIds so that Values.SMI = a.SMIds in the vrSMImain calculate loop
+		    
+		    if (!series.isBarComplete(index)) return;
+		      
+		   
+	}
+
 }
-
-
-}
-
-
-
-
-
-class Test { 
-	static MultiDivAdd getMultDivAdd(int a, int b) 
-	{ 
-		// Returning multiple values of different 
-		// types by returning an object 
-		return new MultiDivAdd(a * b, (double)a / b, (a + b)); 
-	} 
-
-	/*
-	// Driver code 
-	public static void main(String[] args) 
-	{ 
-		MultiDivAdd ans = getMultDivAdd(10, 20); 
-		System.out.println("Multiplication = " + ans.mul); 
-		System.out.println("Division = " + ans.div); 
-		System.out.println("Addition = " + ans.add); 
-	} 
-	*/
-} 
-
 

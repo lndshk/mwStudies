@@ -1,10 +1,11 @@
-package com.motivewave.platform.study.general;
+package study_examples;
 
 import com.motivewave.platform.sdk.common.Coordinate;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
 import com.motivewave.platform.sdk.common.Defaults;
 import com.motivewave.platform.sdk.common.Enums;
+import com.motivewave.platform.sdk.common.Enums.MAMethod;
 import com.motivewave.platform.sdk.common.Inputs;
 import com.motivewave.platform.sdk.common.MarkerInfo;
 import com.motivewave.platform.sdk.common.desc.GuideDescriptor;
@@ -21,31 +22,35 @@ import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.StudyHeader;
 
+import study_examples.vrSMI;
+
 /** Stochastic Momentum Index */
 @StudyHeader(
     namespace="com.motivewave", 
-    id="SMI", 
+    id="vrSMItester", 
     rb="com.motivewave.platform.study.nls.strings",
     name="TITLE_SMI",
-    label="LBL_SMI",
-    desc="DESC_SMI",
-    menu="MENU_GENERAL",
+    label="SMI",
+    desc="SMI for testing",
+    menu="W. VanRip",
     overlay=false,
     studyOverlay=true,
-    signals=true,
+    signals=false,
     helpLink="http://www.motivewave.com/studies/stochastic_momentum_index.htm")
-public class SMI extends com.motivewave.platform.sdk.study.Study 
+
+public class vrSMImain extends com.motivewave.platform.sdk.study.Study 
 {
 	enum Values { SMI, SMI_SIGNAL, // Exported Values
 	              // These values are used for calculating averages and smoothed averages
 	              D, HL, D_MA, HL_MA };
 	              
-	enum Signals { CROSS_ABOVE, CROSS_BELOW };
+	//enum Signals { CROSS_ABOVE, CROSS_BELOW };
 	
   final static String HL_PERIOD = "hlPeriod";
   final static String MA_PERIOD = "maPeriod";
   final static String SMOOTH_PERIOD = "smoothPeriod";
-
+  
+  
   @Override
   public void initialize(Defaults defaults)
   {
@@ -66,13 +71,13 @@ public class SMI extends com.motivewave.platform.sdk.study.Study
     PathDescriptor path = new PathDescriptor(Inputs.PATH, get("LBL_SMI"), defaults.getLineColor(), 1.5f, null, true, false, true);
     path.setSupportsShowAsBars(true);
     lines.addRow(path);
-    PathDescriptor signalPath = new PathDescriptor(Inputs.SIGNAL_PATH, get("LBL_SIGNAL_LINE"), defaults.getRed(), 1.0f, null, true, false, true);
+    PathDescriptor signalPath = new PathDescriptor(Inputs.SIGNAL_PATH, get("LBL_SIGNAL_LINE"), defaults.getRed(), 1.0f, null, true, false, false);
     signalPath.setSupportsShowAsBars(true);
     lines.addRow(signalPath);
     lines.addRow(new MarkerDescriptor(Inputs.UP_MARKER, get("LBL_UP_MARKER"), 
-        Enums.MarkerType.TRIANGLE, Enums.Size.VERY_SMALL, defaults.getGreen(), defaults.getLineColor(), true, true));
+        Enums.MarkerType.TRIANGLE, Enums.Size.VERY_SMALL, defaults.getGreen(), defaults.getLineColor(), true, false));
     lines.addRow(new MarkerDescriptor(Inputs.DOWN_MARKER, get("LBL_DOWN_MARKER"), 
-        Enums.MarkerType.TRIANGLE, Enums.Size.VERY_SMALL, defaults.getRed(), defaults.getLineColor(), true, true));
+        Enums.MarkerType.TRIANGLE, Enums.Size.VERY_SMALL, defaults.getRed(), defaults.getLineColor(), true, false));
 
     tab.addGroup(lines);
 
@@ -96,80 +101,46 @@ public class SMI extends com.motivewave.platform.sdk.study.Study
     desc.exportValue(new ValueDescriptor(Values.SMI, get("LBL_SMI"), new String[] {HL_PERIOD, MA_PERIOD, SMOOTH_PERIOD}));
     desc.exportValue(new ValueDescriptor(Values.SMI_SIGNAL, get("LBL_SMI_SIGNAL"), new String[] {Inputs.SIGNAL_PERIOD}));
     desc.declarePath(Values.SMI, Inputs.PATH);
-    desc.declarePath(Values.SMI_SIGNAL, Inputs.SIGNAL_PATH);
+    //desc.declarePath(Values.SMI_SIGNAL, Inputs.SIGNAL_PATH);
     desc.declareIndicator(Values.SMI, Inputs.IND);
-    desc.declareIndicator(Values.SMI_SIGNAL, Inputs.SIGNAL_IND);
+    //desc.declareIndicator(Values.SMI_SIGNAL, Inputs.SIGNAL_IND);
     
-    desc.declareSignal(Signals.CROSS_ABOVE, get("LBL_CROSS_ABOVE_SIGNAL"));
-    desc.declareSignal(Signals.CROSS_BELOW, get("LBL_CROSS_BELOW_SIGNAL"));
+    //desc.declareSignal(Signals.CROSS_ABOVE, get("LBL_CROSS_ABOVE_SIGNAL"));
+    //desc.declareSignal(Signals.CROSS_BELOW, get("LBL_CROSS_BELOW_SIGNAL"));
     
     desc.setFixedTopValue(100);
     desc.setFixedBottomValue(-100);
     desc.setMinTick(0.1);
     
     setRuntimeDescriptor(desc);
+    
   }
 
   @Override  
   protected void calculate(int index, DataContext ctx)
   {
-    int hlPeriod = getSettings().getInteger(HL_PERIOD);
-    if (index < hlPeriod) return;
-
+    
+	int hlPeriod2 = getSettings().getInteger(HL_PERIOD);
+    int maPeriod2 = getSettings().getInteger(MA_PERIOD);
+    int smoothPeriod2= getSettings().getInteger(SMOOTH_PERIOD);
+    Enums.MAMethod method2 = getSettings().getMAMethod(Inputs.METHOD);
     DataSeries series = ctx.getDataSeries();
-    double HH = series.highest(index, hlPeriod, Enums.BarInput.HIGH);
-    double LL = series.lowest(index, hlPeriod, Enums.BarInput.LOW);
-    double M = (HH + LL)/2.0;
-    double D = series.getClose(index) - M;
-    
-    series.setDouble(index, Values.D, D);
-    series.setDouble(index, Values.HL, HH - LL);
-    
-    int maPeriod = getSettings().getInteger(MA_PERIOD);
-    if (index < hlPeriod + maPeriod) return;
-    
-    Enums.MAMethod method = getSettings().getMAMethod(Inputs.METHOD);
-    series.setDouble(index, Values.D_MA, series.ma(method, index, maPeriod, Values.D));
-    series.setDouble(index, Values.HL_MA, series.ma(method, index, maPeriod, Values.HL));
-    
-    int smoothPeriod= getSettings().getInteger(SMOOTH_PERIOD);
-    if (index < hlPeriod + maPeriod + smoothPeriod) return;
-    
-    Double D_SMOOTH = series.ma(method, index, smoothPeriod, Values.D_MA);
-    Double HL_SMOOTH = series.ma(method, index, smoothPeriod, Values.HL_MA);
-    
-    if (D_SMOOTH == null || HL_SMOOTH == null) return;
-    double HL2 = HL_SMOOTH/2;
-    double SMI = 0;
-    if (HL2 != 0) SMI = 100 * (D_SMOOTH/HL2);
 
-    series.setDouble(index, Values.SMI, SMI);
-
-    int signalPeriod= getSettings().getInteger(Inputs.SIGNAL_PERIOD);
-    if (index < hlPeriod + maPeriod + smoothPeriod + signalPeriod) return;
-
-    Double signal = series.ma(method, index, signalPeriod, Values.SMI);
-    if (signal == null) return;
-    series.setDouble(index, Values.SMI_SIGNAL, signal);
+    final SMIinput F1smi = new SMIinput(hlPeriod2, maPeriod2, smoothPeriod2, method2, null, null, null, null, null, 0.0);
+    //Joe - this instantiates SMIinput. I made it 'final' so that the data would not be overwritten on every bar update
     
-    if (!series.isBarComplete(index)) return;
+    
+    vrSMI.getvrSMI(F1smi, index, ctx);  //calls the SMI method
+    		
+    series.setDouble(index, Values.SMI, F1smi.SMId);
+    // Joe - line 133, I could not figure out a to make any value from the SMIinput class = Values.SMI, so I did this calc.
+    //		 Do you have any ideas on what I can do that could remove this line entirely? I would like it in my method.
+    
+   
+    series.setComplete(index); //Joe - is this required here for the SDK? 
+  }
 
-    // Check for signal events
-    Coordinate c = new Coordinate(series.getStartTime(index), signal);
-    if (crossedAbove(series, index, Values.SMI, Values.SMI_SIGNAL)) {
-      MarkerInfo marker = getSettings().getMarker(Inputs.UP_MARKER);
-      String msg = get("SIGNAL_SMI_CROSS_ABOVE", SMI, signal);
-      if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
-      ctx.signal(index, Signals.CROSS_ABOVE, msg, signal);
-    }
-    else if (crossedBelow(series, index, Values.SMI, Values.SMI_SIGNAL)) {
-      MarkerInfo marker = getSettings().getMarker(Inputs.DOWN_MARKER);
-      String msg = get("SIGNAL_SMI_CROSS_BELOW", SMI, signal);
-      if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.TOP, marker, msg));
-      ctx.signal(index, Signals.CROSS_BELOW, msg, signal);
-    }
-
-    series.setComplete(index);
-  }  
+ 
+  
   
 }

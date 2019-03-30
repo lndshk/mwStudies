@@ -49,10 +49,10 @@ import com.motivewave.platform.sdk.common.X11Colors;
     desc="DESC_COMP_SAMPLE",
     menu="W. VanRip",
     overlay=false,
-    signals=true)
+    signals=true) 
 public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip class
 {
-	enum Values { MA, MTF1, MTF2, MTF3, MTF4, SIGNAL, HIST, RSI, UP, DOWN,
+	enum Values { MA, MTF, MTF1, MTF2, MTF3, MTF4, SIGNAL, HIST, RSI, UP, DOWN,
 				// Values for calculating the SMI
 				D1, HL1, D_MA1, HL_MA1, 
 				D2, HL2, D_MA2, HL_MA2, 
@@ -437,6 +437,7 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     String valStringHL_MA;
     int hlPeriodmtf;
     int maPeriodmtf;
+    int maPeriodMA; //need to get rid of this
     
     StudyHeader header = getHeader();
     boolean updates = getSettings().isBarUpdates() || (header != null && header.requiresBarUpdates());
@@ -491,45 +492,7 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     	  break;	  
       }   //end switch
       
-      //base HL period is mtfHL
-      if (i < mtfHL) return;
 
-      double HH = series2.highest(i, hlPeriodmtf, Enums.BarInput.HIGH);
-      double LL = series2.lowest(i, hlPeriodmtf, Enums.BarInput.LOW);
-      double M = (HH + LL)/2.0;
-      double D = series2.getClose(i) - M;
-      
-      series.setDouble(i, valStringD, D);
-      series.setDouble(i, valStringHL, HH - LL);
-      
-      int maPeriod = getSettings().getInteger(MA_PERIOD);
-      if (index < hlPeriod + maPeriod) return;
-      
-      Enums.MAMethod method = getSettings().getMAMethod(Inputs.METHOD);
-      series.setDouble(index, Values.D_MA, series.ma(method, index, maPeriod, Values.D));
-      series.setDouble(index, Values.HL_MA, series.ma(method, index, maPeriod, Values.HL));
-      
-      int smoothPeriod= getSettings().getInteger(SMOOTH_PERIOD);
-      if (index < hlPeriod + maPeriod + smoothPeriod) return;
-      
-      Double D_SMOOTH = series.ma(method, index, smoothPeriod, Values.D_MA);
-      Double HL_SMOOTH = series.ma(method, index, smoothPeriod, Values.HL_MA);
-      
-      if (D_SMOOTH == null || HL_SMOOTH == null) return;
-      double HL2 = HL_SMOOTH/2;
-      double SMI = 0;
-      if (HL2 != 0) SMI = 100 * (D_SMOOTH/HL2);
-
-      series.setDouble(index, Values.SMI, SMI);
-
-      int signalPeriod= getSettings().getInteger(Inputs.SIGNAL_PERIOD);
-      if (index < hlPeriod + maPeriod + smoothPeriod + signalPeriod) return;
-
-      Double signal = series.ma(method, index, signalPeriod, Values.SMI);
-      if (signal == null) return;
-      series.setDouble(index, Values.SMI_SIGNAL, signal);
-
-      
       
       }  //end j bracket
       
@@ -537,7 +500,7 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
       
       
       
-      series2.setDouble(i, Values.MTF, sma);
+      
     }
 
     // Invoke the parent method to run the "calculate" method below for the primary (chart) data series
