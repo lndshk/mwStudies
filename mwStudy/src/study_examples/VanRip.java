@@ -45,8 +45,8 @@ import com.motivewave.platform.sdk.common.X11Colors;
     namespace="com.Rsquared", 
     id="RH_Master_Strat", 
     rb="study_examples.nls.strings", // locale specific strings are loaded from here
-    name="TITLE_COMP_SAMPLE",
-    desc="DESC_COMP_SAMPLE",
+    name="VR Master Strategy",
+    desc="This study does all the things",
     menu="W. VanRip",
     overlay=false,
     signals=true) 

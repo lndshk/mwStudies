@@ -35,7 +35,7 @@ import com.motivewave.platform.sdk.study.Plot;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.StudyHeader;
 
-import study_examples.vrSMImain.Values;
+//import study_examples.vrSMImain.Values;
 //import study_examples.vrSMItester.Signals;
 
 import com.motivewave.platform.sdk.common.X11Colors;
