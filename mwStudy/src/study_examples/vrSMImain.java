@@ -1,5 +1,6 @@
 package study_examples;
 
+import com.motivewave.platform.sdk.common.BarSize;
 import com.motivewave.platform.sdk.common.Coordinate;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
@@ -8,6 +9,7 @@ import com.motivewave.platform.sdk.common.Enums;
 import com.motivewave.platform.sdk.common.Enums.MAMethod;
 import com.motivewave.platform.sdk.common.Inputs;
 import com.motivewave.platform.sdk.common.MarkerInfo;
+import com.motivewave.platform.sdk.common.desc.BarSizeDescriptor;
 import com.motivewave.platform.sdk.common.desc.GuideDescriptor;
 import com.motivewave.platform.sdk.common.desc.IndicatorDescriptor;
 import com.motivewave.platform.sdk.common.desc.InputDescriptor;
@@ -24,6 +26,7 @@ import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.StudyHeader;
 
 import study_examples.vrSMI;
+import study_examples.CompositeSample.Values;
 
 /** Stochastic Momentum Index */
 @StudyHeader(
@@ -41,11 +44,27 @@ import study_examples.vrSMI;
 
 public class vrSMImain extends com.motivewave.platform.sdk.study.Study 
 {
-	  enum SMIValuesMTF1 { SMI, D, HL, D_MA, HL_MA };
+	enum SMIVal { SMI1, SMI2, SMI3, SMI4, SMI5, SMI6, SMI7, SMI8, SMI9, SMI10, SMI11, SMI12, SMI13};
+	enum SMIValD {D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13};
+	enum SMIValHL {HL1, HL2, HL3, HL4, HL5, HL6, HL7, HL8, HL9, HL10, HL11, HL12, HL13};
+	enum SMIValD_MA{D_MA1, D_MA2, D_MA3, D_MA4, D_MA5, D_MA6, D_MA7, D_MA8, D_MA9, D_MA10, D_MA11, D_MA12, D_MA13};
+	enum SMIValHL_MA {HL_MA1, HL_MA2, HL_MA3, HL_MA4, HL_MA5, HL_MA6, HL_MA7, HL_MA8, HL_MA9, HL_MA10, HL_MA11, HL_MA12, HL_MA13};
+	
+	enum SMIValmtf { SMI1, SMI2, SMI3, SMI4};
+	enum SMIValDmtf {D1, D2, D3, D4};
+	enum SMIValHLmtf {HL1, HL2, HL3, HL4};
+	enum SMIValD_MAmtf {D_MA1, D_MA2, D_MA3, D_MA4};
+	enum SMIValHL_MAmtf{HL_MA1, HL_MA2, HL_MA3, HL_MA4};
+	
+	enum Values {MA};
 	
 	  /* *** strings for SMI *** */
-	
+	final static String TEST = "mtfTEST"; 
+	  
 	  final static String MTF_MULTIPLIER = "mtfMult"; //look for 12x the short timeframe
+	  final static String MTF_BARSIZE = "barSizeNew";
+	  final static String MTF_BARSIZE2 = "barSizeNew2";
+	  
 	  final static String SMI_METHOD = "smiMethod";
 	  final static String SMI_INPUT = "smiInput";
 	  final static String SMI_SMOOTH = "smiSmooth";
@@ -131,8 +150,8 @@ public class vrSMImain extends com.motivewave.platform.sdk.study.Study
 	    
 	    inputs = new SettingGroup(get("LBL_INPUTS"));
 	    
-		inputs.addRow(new MAMethodDescriptor(SMI_METHOD, get("LBL_METHOD"), Enums.MAMethod.EMA),
-				      new InputDescriptor(SMI_INPUT, get("LBL_INPUT"), Enums.BarInput.CLOSE));
+		inputs.addRow(new MAMethodDescriptor(SMI_METHOD, "Method Input", Enums.MAMethod.EMA),
+				      new InputDescriptor(SMI_INPUT, "Fast SMI Inputs", Enums.BarInput.CLOSE));
 
 		//inputs.addRow(new IntegerDescriptor(SMI_SIGNAL, "Signal Period", 1, 1, 300, 1),
 		inputs.addRow(new IntegerDescriptor(SMI_SMOOTH, "Smooth Period", 2, 1, 300, 1));
@@ -145,6 +164,7 @@ public class vrSMImain extends com.motivewave.platform.sdk.study.Study
 					  new IntegerDescriptor(SMI_HL_INC, "Increment by", 1, 1, 300, 1));
 		inputs.addRow(new IntegerDescriptor(SMI_MA1, "MA Period", 5, 1, 300, 1),
 				  	  new IntegerDescriptor(SMI_MA_INC, "Increment by", 2, 1, 300, 1));
+		inputs.addRow(new IndicatorDescriptor(Inputs.IND, get("LBL_INDICATOR"), null, null, false, true, true));
 		tab.addGroup(inputs);
 		
 		SettingGroup colors4 = new SettingGroup("FAST SMI Line Colors");	
@@ -169,7 +189,6 @@ public class vrSMImain extends com.motivewave.platform.sdk.study.Study
 	    sd.addTab(tab);
 	    
 		inputs = new SettingGroup("Inputs");
-	    
 		inputs.addRow(new IntegerDescriptor(MTF_MULTIPLIER, "Timeframe Multiplier", 12, 1, 50, 1));
 		
 		inputs.addRow(new IntegerDescriptor(SMI_HL1_MTF, "H/L Period", 14, 1, 300, 1),
@@ -183,32 +202,35 @@ public class vrSMImain extends com.motivewave.platform.sdk.study.Study
 		colors3.addRow(new PathDescriptor(SMI_LINE2_MTF, "Line 2", null, 1.0f, null, true, true, true));
 		colors3.addRow(new PathDescriptor(SMI_LINE3_MTF, "Line 3", null, 1.0f, null, true, true, true));
 		colors3.addRow(new PathDescriptor(SMI_LINE4_MTF, "Line 4", null, 1.0f, null, true, true, true));
-
 		tab.addGroup(colors3);
-
-    
-    
-    
-    
-    
-    
     
     // Draw the indicator on the chart
-    
-    RuntimeDescriptor desc = new RuntimeDescriptor();
+		 RuntimeDescriptor desc = new RuntimeDescriptor();
+		
+		desc.getPricePlot().setLabelSettings(MTF_MULTIPLIER, MTF_BARSIZE);
+		desc.getPricePlot().setLabelPrefix("SMI");
+	    desc.getPricePlot().declarePath(Values.MA, SMI_LINE1);
+	
+	    // This tells MotiveWave that the MA values come from the data series defined by "BARSIZE"
+	    desc.setValueSeries(Values.MA, MTF_BARSIZE);
+		
+		
+		
+		
+		
+	//SMI Plots	
+	desc.setLabelPrefix("SMI");
     desc.setLabelSettings(SMI_HL1, SMI_MA1, SMI_SMOOTH);
-    desc.exportValue(new ValueDescriptor(SMIValuesMTF1.SMI, "SMI", new String[] {SMI_HL1, SMI_MA1, SMI_SMOOTH}));
-    desc.declarePath(SMIValuesMTF1.SMI, SMI_LINE1);
-    desc.declareIndicator(SMIValuesMTF1.SMI, SMI_LINE1);
+    desc.exportValue(new ValueDescriptor(SMIVal.SMI1, "SMI", new String[] {SMI_HL1, SMI_MA1, SMI_SMOOTH}));
+    desc.declarePath(SMIVal.SMI1, SMI_LINE1); 
+    desc.declareIndicator(SMIVal.SMI1, Inputs.IND);
    
     desc.setFixedTopValue(100);
     desc.setFixedBottomValue(-100);
     desc.setMinTick(0.1);
     
     setRuntimeDescriptor(desc);
-    
   }
-
   @Override  
   protected void calculate(int index, DataContext ctx)
   {
@@ -226,25 +248,25 @@ public class vrSMImain extends com.motivewave.platform.sdk.study.Study
 	    	double M = (HH + LL)/2.0;
 	    	double D = series.getClose(index) - M;
 	    
-	    	series.setDouble(index, SMIValuesMTF1.D, D);
-	    	series.setDouble(index, SMIValuesMTF1.HL, HH - LL);
+	    	series.setDouble(index, SMIValD.D1, D);
+	    	series.setDouble(index, SMIValHL.HL1, HH - LL);
 	    	
 	    	if (index < hlPeriod + maPeriod) return;
 	    
-	    	series.setDouble(index, SMIValuesMTF1.D_MA, series.ma(method, index, maPeriod, SMIValuesMTF1.D));
-	    	series.setDouble(index, SMIValuesMTF1.HL_MA, series.ma(method, index, maPeriod, SMIValuesMTF1.HL));
+	    	series.setDouble(index, SMIValD_MA.D_MA1, series.ma(method, index, maPeriod, SMIValD.D1));
+	    	series.setDouble(index, SMIValHL_MA.HL_MA1, series.ma(method, index, maPeriod, SMIValHL.HL1));
 	    	
 	        if (index < hlPeriod + maPeriod + smoothPeriod) return;
 	    
-	        Double D_SMOOTH = series.ma(method, index, smoothPeriod, SMIValuesMTF1.D_MA);
-	        Double HL_SMOOTH = series.ma(method, index, smoothPeriod, SMIValuesMTF1.HL_MA);
+	        Double D_SMOOTH = series.ma(method, index, smoothPeriod, SMIValD_MA.D_MA1);
+	        Double HL_SMOOTH = series.ma(method, index, smoothPeriod, SMIValHL_MA.HL_MA1);
 	    
 	        if (D_SMOOTH == null || HL_SMOOTH == null) return;
 	        double HL2 = HL_SMOOTH/2;
 	        double SMI = 0;
 	        if (HL2 != 0) SMI = 100 * (D_SMOOTH/HL2);
 
-	        series.setDouble(index, SMIValuesMTF1.SMI, SMI);
+	        series.setDouble(index, SMIVal.SMI1, SMI);
 	////////////////    
 	        if (!series.isBarComplete(index)) return;
 	

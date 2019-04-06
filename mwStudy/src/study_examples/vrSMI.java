@@ -112,7 +112,6 @@ public class vrSMI {
 		    if (HL2 != 0) a.SMId = 100 * (D_SMOOTH/HL2);
 		    
 		    series.setDouble(index, a.SMIds, a.SMId);
-		    // Joe - duplicate question, how can cast a.SMIds so that Values.SMI = a.SMIds in the vrSMImain calculate loop
 		    
 		    if (!series.isBarComplete(index)) return;
 		      

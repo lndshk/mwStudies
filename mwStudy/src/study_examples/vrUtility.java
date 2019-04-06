@@ -7,12 +7,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 
+import com.motivewave.platform.sdk.common.*;
+import com.motivewave.platform.sdk.common.Enums.MAMethod;
+import com.motivewave.platform.sdk.common.desc.*;
+import com.motivewave.platform.sdk.study.*;
+import com.motivewave.platform.sdk.study.Study;
 import com.motivewave.platform.sdk.common.BarSize;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
 import com.motivewave.platform.sdk.common.Enums;
 import com.motivewave.platform.sdk.common.Enums.MAMethod;
 //import com.motivewave.platform.study.general3.Numb;  //In the utility file but could not resolve
+
+//import study_examples.vrKAMA2.Values;
 
 
 //import study_examples.vrSMImain.Values;
@@ -28,14 +35,33 @@ import com.motivewave.platform.sdk.common.Enums.MAMethod;
 
 public class vrUtility { 
     
-	public static double[] SMIinput(int hl, int ma, int sp, Enums.MAMethod meth, 
-			DataSeries Dsig, DataSeries HLsig, DataSeries D_MAsig, DataSeries HL_MAsig,
-			DataSeries SMIsig, Double SMIdouble)  //add ', DataSeries SIGsig' if I want to add signals
+	public static double kamaLine(int index, DataContext ctx, int period, int kaFast, int kaSlow, Object input, double prevKama)
 	{ 
-		double tossme = 12.1;
-		double tossme2 = 12.1;
-		double[] value = {tossme, tossme2};
-		return value;
+		if (kaSlow < kaFast) return 0.0;
+		if (index < period*2) return 0.0;
+		DataSeries series=ctx.getDataSeries();
+	    
+	    double fastest = (double)2/(kaFast+1);  //cast the integers to double
+	    double slowest = (double)2/(kaSlow+1);
+	    
+	    double change = Math.abs(series.getDouble(index-period, input) - series.getDouble(index, input)); 
+	    double kamavol = 0;
+	    // loop to sum last number of periods
+		for(int i = 0; i < period; i++) {
+			kamavol = kamavol + Math.abs(series.getDouble(index-i, input) - series.getDouble(index-(i+1), input));
+		}
+
+		// Prevent divide by zero
+		if (kamavol == 0) kamavol = 0.00000000000001;
+
+		// Generate the Efficiency Ratio (ER) and Smoothing Constant (SC)
+	    double efficiencyRatio = change/kamavol;
+	    double smoothingConstant = Math.pow(((efficiencyRatio*(fastest-slowest))+slowest), 2);
+
+	    // Calculate the current KAMA Values
+	    double currentKama = prevKama + smoothingConstant*(series.getDouble(index, input) - prevKama);
+
+		return currentKama;
 
 	} 
 } 
