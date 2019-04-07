@@ -1,40 +1,26 @@
 package study_examples;
 
 import com.motivewave.platform.sdk.common.BarSize;
-import com.motivewave.platform.sdk.common.Coordinate;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
 import com.motivewave.platform.sdk.common.Defaults;
 import com.motivewave.platform.sdk.common.Enums;
-import com.motivewave.platform.sdk.common.Enums.MAMethod;
-import com.motivewave.platform.sdk.common.GuideInfo;
 import com.motivewave.platform.sdk.common.Inputs;
-import com.motivewave.platform.sdk.common.LineInfo;
-import com.motivewave.platform.sdk.common.MarkerInfo;
-import com.motivewave.platform.sdk.common.Util;
-import com.motivewave.platform.sdk.common.desc.BarDescriptor;
-import com.motivewave.platform.sdk.common.desc.BarSizeDescriptor;
-import com.motivewave.platform.sdk.common.desc.BooleanDescriptor;
-import com.motivewave.platform.sdk.common.desc.ColorDescriptor;
-import com.motivewave.platform.sdk.common.desc.EnabledDependency;
 import com.motivewave.platform.sdk.common.desc.GuideDescriptor;
 import com.motivewave.platform.sdk.common.desc.IndicatorDescriptor;
 import com.motivewave.platform.sdk.common.desc.DoubleDescriptor;
 import com.motivewave.platform.sdk.common.desc.InputDescriptor;
 import com.motivewave.platform.sdk.common.desc.IntegerDescriptor;
 import com.motivewave.platform.sdk.common.desc.MAMethodDescriptor;
-import com.motivewave.platform.sdk.common.desc.MarkerDescriptor;
 import com.motivewave.platform.sdk.common.desc.PathDescriptor;
 import com.motivewave.platform.sdk.common.desc.SettingGroup;
 import com.motivewave.platform.sdk.common.desc.SettingTab;
 import com.motivewave.platform.sdk.common.desc.SettingsDescriptor;
 import com.motivewave.platform.sdk.common.desc.ShadeDescriptor;
 import com.motivewave.platform.sdk.common.desc.ValueDescriptor;
-import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.Plot;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.StudyHeader;
-import com.motivewave.platform.sdk.common.X11Colors;
 
 
 /** Combines a KAMA, BBands SMI and RSI into one study. */
@@ -426,7 +412,7 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     int barSizeint = mtfbarint * mtfPeriod; //Multiply the interval by the mtf multiplier
        
     //Calculates a longer period interval based upon the mtfPeriod
-    BarSize barSizeNew = barSize.getBarSize(barSize.getType(), barSizeint); 
+    BarSize barSizeNew = BarSize.getBarSize(barSize.getType(), barSizeint); 
     //Assembes the longer period timeframe series
     DataSeries series2 = ctx.getDataSeries(barSizeNew);
 

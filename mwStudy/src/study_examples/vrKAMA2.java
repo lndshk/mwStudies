@@ -1,7 +1,6 @@
 package study_examples;
 
 import com.motivewave.platform.sdk.common.*;
-import com.motivewave.platform.sdk.common.Enums.MAMethod;
 import com.motivewave.platform.sdk.common.desc.*;
 import com.motivewave.platform.sdk.study.*;
 
@@ -348,7 +347,7 @@ public class vrKAMA2 extends Study
 		 series.setDouble(index, SlowKamaShade.BOTTOM, series.getDouble(index, SlowKamaValues.KAMA3));	
 		}
 	
-	
+	series.setComplete(index);
 	
   }
 }

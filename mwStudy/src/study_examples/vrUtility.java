@@ -1,23 +1,8 @@
 package study_examples;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Calendar;
-
-import com.motivewave.platform.sdk.common.*;
-import com.motivewave.platform.sdk.common.Enums.MAMethod;
-import com.motivewave.platform.sdk.common.desc.*;
-import com.motivewave.platform.sdk.study.*;
-import com.motivewave.platform.sdk.study.Study;
-import com.motivewave.platform.sdk.common.BarSize;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
 import com.motivewave.platform.sdk.common.Enums;
-import com.motivewave.platform.sdk.common.Enums.MAMethod;
-//import com.motivewave.platform.study.general3.Numb;  //In the utility file but could not resolve
 
 //import study_examples.vrKAMA2.Values;
 
@@ -64,22 +49,29 @@ public class vrUtility {
 		return currentKama;
 
 	} 
-} 
 
-class vrSMItotoss {
-
-	public static void getvrSMI(SMIinput a, int index, DataContext ctx)
+	public static double[] smi_HL(int index, DataContext ctx, int hlPeriod)
 	{	
-		    if (index < a.hlPeriod) return; //return if the index is less than the high period
+		    double D = 		.00000000000000001;
+		    double delta =  .00000000000000001;
+		    
+		    if (index < hlPeriod) return new double[] {D, delta}; //return if the index is less than the high period
 
 		    DataSeries series = ctx.getDataSeries();  //data series based on price
-		    
-		    double HH = series.highest(index, a.hlPeriod, Enums.BarInput.HIGH);
-		    double LL = series.lowest(index, a.hlPeriod, Enums.BarInput.LOW);
+		   
+		    double HH = series.highest(index, hlPeriod, Enums.BarInput.HIGH);
+		    double LL = series.lowest(index, hlPeriod, Enums.BarInput.LOW);
 		    double M = (HH + LL)/2.0;
-		    double D = series.getClose(index) - M;
-	
-		    series.setDouble(index, a.D, D);
+		   
+		    D = series.getClose(index) - M;
+		    delta = HH - LL;
+		    
+		    return new double[] {D, delta};
+		    
+	}	    
+		
+	/*
+			series.setDouble(index, a.D, D);
 		    series.setDouble(index, a.HL , HH - LL);
 	
 		    if (index < a.hlPeriod + a.maPeriod) return;
@@ -98,12 +90,11 @@ class vrSMItotoss {
 		    if (HL2 != 0) a.SMId = 100 * (D_SMOOTH/HL2);
 		    
 		    series.setDouble(index, a.SMIds, a.SMId);
-		    // Joe - duplicate question, how can cast a.SMIds so that Values.SMI = a.SMIds in the vrSMImain calculate loop
 		    
-		    if (!series.isBarComplete(index)) return;
+		    if (!series.isBarComplete(index)) return new double[] { 0.00, 0.00, 0.00, 0.00, 0.00 };
 		      
 		   
-	}
+	*/
 
-}
+} 
 

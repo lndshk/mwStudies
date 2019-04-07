@@ -1,7 +1,6 @@
 package study_examples;
 
 import com.motivewave.platform.sdk.common.*;
-import com.motivewave.platform.sdk.common.Enums.MAMethod;
 import com.motivewave.platform.sdk.common.desc.*;
 import com.motivewave.platform.sdk.study.*;
 
