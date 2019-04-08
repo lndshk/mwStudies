@@ -3,7 +3,7 @@ package study_examples;
 import com.motivewave.platform.sdk.common.*;
 import com.motivewave.platform.sdk.common.desc.*;
 import com.motivewave.platform.sdk.study.*;
-
+import com.motivewave.platform.sdk.common.Util;
 
 
 // Kaufman's Adaptive Moving Average. Developed by Perry Kaufman, this indicator is an
@@ -26,8 +26,8 @@ public class vrKAMA2 extends Study
 {
 	  enum FastKamaValues { KAMA1, KAMA2, KAMA3, KAMA4, KAMA5 };
 	  enum FastKamaShade { TOP, BOTTOM};
-	  enum SlowKamaValues { KAMA1, KAMA2, KAMA3, KAMA4, KAMA5 };
-	  enum SlowKamaShade { TOP, BOTTOM};
+	  enum SlowKamaValues { mKAMA1, mKAMA2, mKAMA3, mKAMA4, mKAMA5 };
+	  enum SlowKamaShade { mTOP, mBOTTOM};
 	  
 	  final static String KAMA_INPUT = "kaInput"; //KAMA calculated on close
 	  final static String KAMA_FAST_T_FILL = "kaFastTopFill"; //Fill colors
@@ -156,47 +156,47 @@ public class vrKAMA2 extends Study
     tab = new SettingTab("Slow Kama");
     sd.addTab(tab);
 
-    inputs = new SettingGroup("Slow KAMA Wave Inputs");
+    SettingGroup inputs2 = new SettingGroup("Slow KAMA Wave inputs2");
 
-    //inputs.addRow(new InputDescriptor(KAMA_INPUT, get("Input"), Enums.BarInput.CLOSE));
+    //inputs2.addRow(new InputDescriptor(KAMA_INPUT, get("Input"), Enums.BarInput.CLOSE));
     
-    inputs.addRow(new IntegerDescriptor(KAMA_PERIOD_S1, get("Period"), 20, 1, 999, 1),
+    inputs2.addRow(new IntegerDescriptor(KAMA_PERIOD_S1, get("Period"), 20, 1, 999, 1),
     			  new IntegerDescriptor(KAMA_FAST_S1, get("Fast"), 6, 1, 999, 1),
     		      new IntegerDescriptor(KAMA_SLOW_S1, get("Slow"), 30, 1, 999, 1)); 
-    inputs.addRow(new IntegerDescriptor(KAMA_PERIOD_S2, get("Period"), 20, 1, 999, 1),
+    inputs2.addRow(new IntegerDescriptor(KAMA_PERIOD_S2, get("Period"), 20, 1, 999, 1),
 			  	  new IntegerDescriptor(KAMA_FAST_S2, get("Fast"), 7, 1, 999, 1),
 		          new IntegerDescriptor(KAMA_SLOW_S2, get("Slow"), 30, 1, 999, 1)); 
-    inputs.addRow(new IntegerDescriptor(KAMA_PERIOD_S3, get("Period"), 20, 1, 999, 1),
+    inputs2.addRow(new IntegerDescriptor(KAMA_PERIOD_S3, get("Period"), 20, 1, 999, 1),
 			      new IntegerDescriptor(KAMA_FAST_S3, get("Fast"), 8, 1, 999, 1),
 		          new IntegerDescriptor(KAMA_SLOW_S3, get("Slow"), 30, 1, 999, 1)); 
-    inputs.addRow(new IntegerDescriptor(KAMA_PERIOD_S4, get("Period"), 20, 1, 999, 1),
+    inputs2.addRow(new IntegerDescriptor(KAMA_PERIOD_S4, get("Period"), 20, 1, 999, 1),
 			      new IntegerDescriptor(KAMA_FAST_S4, get("Fast"), 9, 1, 999, 1),
 		          new IntegerDescriptor(KAMA_SLOW_S4, get("Slow"), 30, 1, 999, 1)); 
-    inputs.addRow(new IntegerDescriptor(KAMA_PERIOD_S5, get("Period"), 20, 1, 999, 1),
+    inputs2.addRow(new IntegerDescriptor(KAMA_PERIOD_S5, get("Period"), 20, 1, 999, 1),
 			      new IntegerDescriptor(KAMA_FAST_S5, get("Fast"), 10, 1, 999, 1),
 		          new IntegerDescriptor(KAMA_SLOW_S5, get("Slow"), 30, 1, 999, 1)); 
     
-    tab.addGroup(inputs);
+    tab.addGroup(inputs2);
     
-    colors = new SettingGroup("Fast KAMA Lines");
-    colors.addRow(new PathDescriptor(KAMA_PATH_S1, "Line 1", defaults.getOrange(), 1.0f, 
+    SettingGroup colors2 = new SettingGroup("Fast KAMA Lines");
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S1, "Line 1", defaults.getOrange(), 1.0f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_S2, "Line 2", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S2, "Line 2", defaults.getGrey(), 1.0f, 
             	  null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_S3, "Line 3", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S3, "Line 3", defaults.getGrey(), 1.0f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_S4, "Line 4", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S4, "Line 4", defaults.getGrey(), 1.0f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_S5, "Line 5", defaults.getBlue(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S5, "Line 5", defaults.getBlue(), 1.0f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_SLOW_T_INVIS, "Make Invisible", null, 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_SLOW_T_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
-    colors.addRow(new PathDescriptor(KAMA_SLOW_B_INVIS, "Make Invisible", null, 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_SLOW_B_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
     
-    colors.addRow(new ShadeDescriptor(KAMA_SLOW_T_FILL, "Up Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.ABOVE, defaults.getTopFillColor(), true, true));
-    colors.addRow(new ShadeDescriptor(KAMA_SLOW_B_FILL, "Down Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.BELOW, defaults.getBottomFillColor(), true, true));
-    tab.addGroup(colors);
+    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_T_FILL, "Up Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.ABOVE, defaults.getTopFillColor(), true, true));
+    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_B_FILL, "Down Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.BELOW, defaults.getBottomFillColor(), true, true));
+    tab.addGroup(colors2);
     
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,32 +208,36 @@ public class vrKAMA2 extends Study
     RuntimeDescriptor desc = new RuntimeDescriptor();
     setRuntimeDescriptor(desc);
 
-    desc.getPricePlot().setLabelSettings(KAMA_INPUT, KAMA_PERIOD_F1, KAMA_PERIOD_S1);
-    desc.getPricePlot().setLabelPrefix("KAMA");
-    desc.getPricePlot().declarePath(FastKamaValues.KAMA1, KAMA_PATH_F1);
-    desc.getPricePlot().declarePath(FastKamaValues.KAMA2, KAMA_PATH_F2); 
-    desc.getPricePlot().declarePath(FastKamaValues.KAMA3, KAMA_PATH_F3); 
-    desc.getPricePlot().declarePath(FastKamaValues.KAMA4, KAMA_PATH_F4); 
-    desc.getPricePlot().declarePath(FastKamaValues.KAMA5, KAMA_PATH_F5); 
-    desc.getPricePlot().declarePath(FastKamaShade.TOP, KAMA_FAST_T_INVIS); 
-    desc.getPricePlot().declarePath(FastKamaShade.BOTTOM, KAMA_FAST_B_INVIS); 
+    desc.setLabelSettings(KAMA_INPUT, KAMA_PERIOD_F1, KAMA_PERIOD_S1);
+    desc.setLabelPrefix("KAMA");
+    desc.declarePath(FastKamaValues.KAMA1, KAMA_PATH_F1);
+    desc.declarePath(FastKamaValues.KAMA2, KAMA_PATH_F2); 
+    desc.declarePath(FastKamaValues.KAMA3, KAMA_PATH_F3); 
+    desc.declarePath(FastKamaValues.KAMA4, KAMA_PATH_F4); 
+    desc.declarePath(FastKamaValues.KAMA5, KAMA_PATH_F5); 
+    desc.declarePath(FastKamaShade.TOP, KAMA_FAST_T_INVIS); 
+    desc.declarePath(FastKamaShade.BOTTOM, KAMA_FAST_B_INVIS); 
     
     
-    desc.getPricePlot().declarePath(SlowKamaValues.KAMA1, KAMA_PATH_S1);
-    desc.getPricePlot().declarePath(SlowKamaValues.KAMA2, KAMA_PATH_S2); 
-    desc.getPricePlot().declarePath(SlowKamaValues.KAMA3, KAMA_PATH_S3); 
-    desc.getPricePlot().declarePath(SlowKamaValues.KAMA4, KAMA_PATH_S4); 
-    desc.getPricePlot().declarePath(SlowKamaValues.KAMA5, KAMA_PATH_S5); 
-    desc.getPricePlot().declarePath(SlowKamaShade.TOP, KAMA_SLOW_T_INVIS); 
-    desc.getPricePlot().declarePath(SlowKamaShade.BOTTOM, KAMA_SLOW_B_INVIS);    
+    desc.declarePath(SlowKamaValues.mKAMA1, KAMA_PATH_S1);
+    desc.declarePath(SlowKamaValues.mKAMA2, KAMA_PATH_S2); 
+    desc.declarePath(SlowKamaValues.mKAMA3, KAMA_PATH_S3); 
+    desc.declarePath(SlowKamaValues.mKAMA4, KAMA_PATH_S4); 
+    desc.declarePath(SlowKamaValues.mKAMA5, KAMA_PATH_S5); 
+    desc.declarePath(SlowKamaShade.mTOP, KAMA_SLOW_T_INVIS); 
+    desc.declarePath(SlowKamaShade.mBOTTOM, KAMA_SLOW_B_INVIS);    
     desc.exportValue(new ValueDescriptor(FastKamaValues.KAMA1, "KAMA", 
                      new String[] {KAMA_INPUT, KAMA_PERIOD_F1}));
+    
+    setRuntimeDescriptor(desc);
+    
   }
 
   @Override
   public int getMinBars()
   {
     return getSettings().getInteger(KAMA_SLOW_S1)*2;
+ 
   }
 
   /** This method calculates the moving average for the given index in the data series. */
@@ -278,7 +282,7 @@ public class vrKAMA2 extends Study
 	final String[] SlowKamaPeriod = {KAMA_PERIOD_S1, KAMA_PERIOD_S2, KAMA_PERIOD_S3, KAMA_PERIOD_S4, KAMA_PERIOD_S5};
 	final String[] SlowKamaFast = {KAMA_FAST_S1, KAMA_FAST_S2, KAMA_FAST_S3, KAMA_FAST_S4, KAMA_FAST_S5 };
 	final String[] SlowKamaSlow = {KAMA_SLOW_S1, KAMA_SLOW_S2, KAMA_SLOW_S3, KAMA_SLOW_S4, KAMA_SLOW_S5 }; 
-	final String[] SlowKamaEnum = {"KAMA1", "KAMA2","KAMA3", "KAMA4", "KAMA5"};
+	final String[] SlowKamaEnum = {"mKAMA1", "mKAMA2","mKAMA3", "mKAMA4", "mKAMA5"};
 	
 	for(int i = 0; i <= 4; i++)  //Loop 5 times
 	{
@@ -327,24 +331,24 @@ public class vrKAMA2 extends Study
 	
 	// SLOW KAMA SHADING
 	
-	if ((series.getDouble(index, SlowKamaValues.KAMA1) > series.getDouble(index, SlowKamaValues.KAMA2)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA2) > series.getDouble(index, SlowKamaValues.KAMA3)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA3) > series.getDouble(index, SlowKamaValues.KAMA4)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA4) > series.getDouble(index, SlowKamaValues.KAMA5)))
+	if ((series.getDouble(index, SlowKamaValues.mKAMA1) > series.getDouble(index, SlowKamaValues.mKAMA2)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA2) > series.getDouble(index, SlowKamaValues.mKAMA3)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA3) > series.getDouble(index, SlowKamaValues.mKAMA4)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA4) > series.getDouble(index, SlowKamaValues.mKAMA5)))
 	    {
-		series.setDouble(index, SlowKamaShade.TOP, series.getDouble(index, SlowKamaValues.KAMA1));
-		series.setDouble(index, SlowKamaShade.BOTTOM, series.getDouble(index, SlowKamaValues.KAMA5));
+		series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA1));
+		series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA5));
 		} else if 
-	   ((series.getDouble(index, SlowKamaValues.KAMA1) < series.getDouble(index, SlowKamaValues.KAMA2)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA2) < series.getDouble(index, SlowKamaValues.KAMA3)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA3) < series.getDouble(index, SlowKamaValues.KAMA4)) &&
-	   (series.getDouble(index, SlowKamaValues.KAMA4) < series.getDouble(index, SlowKamaValues.KAMA5))) 
+	   ((series.getDouble(index, SlowKamaValues.mKAMA1) < series.getDouble(index, SlowKamaValues.mKAMA2)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA2) < series.getDouble(index, SlowKamaValues.mKAMA3)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA3) < series.getDouble(index, SlowKamaValues.mKAMA4)) &&
+	   (series.getDouble(index, SlowKamaValues.mKAMA4) < series.getDouble(index, SlowKamaValues.mKAMA5))) 
 		{
-		 series.setDouble(index, SlowKamaShade.TOP, series.getDouble(index, SlowKamaValues.KAMA1));
-	     series.setDouble(index, SlowKamaShade.BOTTOM, series.getDouble(index, SlowKamaValues.KAMA5));	
+		 series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA1));
+	     series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA5));	
 		} else {
-		 series.setDouble(index, SlowKamaShade.TOP, series.getDouble(index, SlowKamaValues.KAMA3));
-		 series.setDouble(index, SlowKamaShade.BOTTOM, series.getDouble(index, SlowKamaValues.KAMA3));	
+		 series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA3));
+		 series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA3));	
 		}
 	
 	series.setComplete(index);
