@@ -1,5 +1,7 @@
 package study_examples;
 
+import java.awt.Color;
+
 import com.motivewave.platform.sdk.common.BarSize;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
@@ -85,7 +87,7 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
 			   new MAMethodDescriptor(MA_METHOD, "Method", Enums.MAMethod.EMA),
 			   new InputDescriptor(MA_INPUT, "Input", Enums.BarInput.CLOSE));
 
-    inputs.addRow(new PathDescriptor(MA_PATH, get("LBL_LINE"), null, 1.0f, null, true, true, true));
+    inputs.addRow(new PathDescriptor(MA_PATH, get("LBL_LINE"), defaults.getYellow(), 1.5f, null, true, true, true));
     inputs.addRow(new IndicatorDescriptor(MA_INDICATOR,"Line Label", null, null, false, true, true));
         
     tab.addGroup(inputs);
@@ -108,11 +110,11 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     
     /* Bollinger Band Colors */
     SettingGroup colors = new SettingGroup("Line Colors");
-    colors.addRow(new PathDescriptor(BB_PATH, "Middle", null, 1.0f, null, true, true, true));
-    colors.addRow(new PathDescriptor(BB_STD_L1, get("Std Dev 1"), null, 1.0f, new float [] {3f,3f}, true, true, true));
-    colors.addRow(new PathDescriptor(BB_STD_L2, get("Std Dev 2"), null, 1.0f, new float [] {3f,3f}, true, true, true));
-    colors.addRow(new PathDescriptor(BB_STD_L3, get("Std Dev 3"), null, 1.0f, new float [] {3f,3f}, true, true, true));   
-    colors.addRow(new PathDescriptor(BB_STD_L4, get("Std Dev 4"), null, 1.0f, new float [] {3f,3f}, true, true, true));
+    colors.addRow(new PathDescriptor(BB_PATH, "Middle", Color.decode("#ECEFF1"), 1.0f, null, true, true, true));
+    colors.addRow(new PathDescriptor(BB_STD_L1, get("Std Dev 1"),Color.decode("#ECEFF1"), 1.0f, new float [] {3f,3f}, true, true, true));
+    colors.addRow(new PathDescriptor(BB_STD_L2, get("Std Dev 2"), Color.decode("#B0BEC5"), 1.0f, new float [] {3f,3f}, true, true, true));
+    colors.addRow(new PathDescriptor(BB_STD_L3, get("Std Dev 3"), Color.decode("#78909C"), 1.0f, new float [] {3f,3f}, true, true, true));   
+    colors.addRow(new PathDescriptor(BB_STD_L4, get("Std Dev 4"), Color.decode("#546E7A"), 1.0f, new float [] {3f,3f}, true, true, true));
     tab.addGroup(colors);
     
     RuntimeDescriptor desc = new RuntimeDescriptor();
@@ -148,6 +150,13 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     desc.getPricePlot().declarePath(BBValues.MID, BB_PATH);
   }
 
+  @Override
+  public void onLoad(Defaults defaults)
+  {
+   setMinBars(3000);
+  }
+  
+  
   @Override  
   protected void calculate(int index, DataContext ctx)
   {

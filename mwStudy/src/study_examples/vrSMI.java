@@ -25,11 +25,7 @@ import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.Study;
 import com.motivewave.platform.sdk.study.StudyHeader;
-import com.motivewave.platform.sdk.common.Instrument;
-import study_examples.vrKAMA2.FastKamaValues;
-import study_examples.vrKAMA2.KamaPerfect;
 
-import com.motivewave.platform.sdk.common.X11Colors;
 
 /** Stochastic Momentum Index */
 @StudyHeader(
@@ -43,6 +39,7 @@ import com.motivewave.platform.sdk.common.X11Colors;
     overlay=false,
     studyOverlay=false,
     signals = true,
+    requiresBarUpdates = true,
     helpLink="http://www.motivewave.com/studies/stochastic_momentum_index.htm")
 
 public class vrSMI extends Study
@@ -61,7 +58,7 @@ public class vrSMI extends Study
 	
 	enum Values {MA};
 	
-	enum SMISignal{SHALLOW_BULL, SHALLOW_BEAR};
+	enum SMISignal{SHALLOW_BULL, SHALLOW_BEAR, HFT_BULL, HFT_BEAR};
 	
 	  /* *** strings for SMI *** */
 	final static String TEST = "mtfTEST"; 
@@ -88,16 +85,16 @@ public class vrSMI extends Study
 	  final static String SMI_LINE1 = "smiL1";  // 3/5 - SMI Line Settings
 	  final static String SMI_LINE2 = "smiL2";  //4/7
 	  final static String SMI_LINE3 = "smiL3";  //5/9
-	  final static String SMI_LINE4 = "smiL4";  //6/10
-	  final static String SMI_LINE5 = "smiL5";  //7/12
-	  final static String SMI_LINE6 = "smiL6";  //8/14
-	  final static String SMI_LINE7 = "smiL7";  //9/16
-	  final static String SMI_LINE8 = "smiL8";  //10/18
-	  final static String SMI_LINE9 = "smiL9";  //11/20
-	  final static String SMI_LINE10= "smiL10"; //12/22
-	  final static String SMI_LINE11= "smiL11"; //13/24
-	  final static String SMI_LINE12= "smiL12"; //14/26
-	  final static String SMI_LINE13= "smiL13"; //15/28
+	  final static String SMI_LINE4 = "smiL4";  //6/11
+	  final static String SMI_LINE5 = "smiL5";  //7/13
+	  final static String SMI_LINE6 = "smiL6";  //8/15
+	  final static String SMI_LINE7 = "smiL7";  //9/17
+	  final static String SMI_LINE8 = "smiL8";  //10/19
+	  final static String SMI_LINE9 = "smiL9";  //11/21
+	  final static String SMI_LINE10= "smiL10"; //12/23
+	  final static String SMI_LINE11= "smiL11"; //13/25
+	  final static String SMI_LINE12= "smiL12"; //14/27
+	  final static String SMI_LINE13= "smiL13"; //15/29
 	  
 	  final static String SMI_LINE1_MTF = "smiL1mtf"; //14/27
 	  final static String SMI_LINE2_MTF = "smiL2mtf"; //15/29
@@ -108,9 +105,12 @@ public class vrSMI extends Study
 	  final static String SMI_LINE7_MTF = "smiL7mtf"; //20/39
 	  final static String SMI_LINE8_MTF = "smiL8mtf"; //21/41
 	  final static String SMI_LINE9_MTF = "smiL9mtf"; //22/43
-	  final static String SMI_LINE10_MTF = "smiL10mtf"; 
-	  final static String SMI_LINE11_MTF = "smiL11mtf";
-	  final static String SMI_LINE12_MTF = "smiL12mtf";
+	  final static String SMI_LINE10_MTF = "smiL10mtf"; //23/45
+	  final static String SMI_LINE11_MTF = "smiL11mtf"; //24/47
+	  final static String SMI_LINE12_MTF = "smiL12mtf"; //25/49
+	  
+	  final static String HFT_BULL_MARKER = "hftBullMark"; 
+	  final static String HFT_BEAR_MARKER = "hftBearMark"; 
 	  
  /* final static String HL_PERIOD = "hlPeriod";
   final static String MA_PERIOD = "maPeriod";
@@ -166,24 +166,7 @@ public class vrSMI extends Study
 		colors4.addRow(new PathDescriptor(SMI_LINE13, "Line 13", Color.decode("#263238"), 1.0f, null, true, true, true));
 		tab.addGroup(colors4);
 		
-		//////    Guidelines for SMI Chart       //////
-		
-	    SettingGroup guides = new SettingGroup("Guides");
-	    GuideDescriptor mg1 = new GuideDescriptor(Inputs.TOP_GUIDE, "Top Guide", 50, -100, 100, 1, true);
-	    mg1.setLineColor(Color.decode("#233A3B"));
-	    mg1.setDash(new float[] {3, 3});
-	    guides.addRow(mg1);
-	    
-	    GuideDescriptor mg2 = new GuideDescriptor(Inputs.MIDDLE_GUIDE, "Middle Guide", 0, -100, 100, 1, true);
-	    mg2.setLineColor(Color.decode("#008B8B"));
-	    mg2.setDash(new float[] {3, 3});
-	    guides.addRow(mg2);
-	    
-	    GuideDescriptor mg3 = new GuideDescriptor(Inputs.BOTTOM_GUIDE, "Bottom Guide", -50, -100, 100, 1, true);
-	    mg3.setLineColor(Color.decode("#233A3B"));
-	    mg3.setDash(new float[] {3, 3});
-	    guides.addRow(mg3);
-	    tab.addGroup(guides);
+
 	    
 		/*  SMI MTF Input Tab   */  /* Stochastic Momentum Index */
 
@@ -228,14 +211,36 @@ public class vrSMI extends Study
 	        Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getGreen(), defaults.getLineColor(), true, true));
 	    markers.addRow(new MarkerDescriptor(Inputs.DOWN_MARKER, "Shallow Bear Pullback", 
 		        Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getRed(), defaults.getLineColor(), true, true));
-	    
+	    markers.addRow(new MarkerDescriptor(HFT_BULL_MARKER, "HFT Bull Expansion", 
+		        Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getPurple(), defaults.getLineColor(), true, true));
+		markers.addRow(new MarkerDescriptor(HFT_BEAR_MARKER, "HFT Bear Expansion", 
+			    Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getPurple(), defaults.getLineColor(), true, true));
 	    tab.addGroup(markers);
+	    
+		//////    Guidelines for SMI Chart       //////
+		
+	    SettingGroup guides = new SettingGroup("Guides");
+	    GuideDescriptor mg1 = new GuideDescriptor(Inputs.TOP_GUIDE, "Top Guide", 50, -100, 100, 1, true);
+	    mg1.setLineColor(Color.decode("#233A3B"));
+	    mg1.setDash(new float[] {3, 3});
+	    guides.addRow(mg1);
+	    
+	    GuideDescriptor mg2 = new GuideDescriptor(Inputs.MIDDLE_GUIDE, "Middle Guide", 0, -100, 100, 1, true);
+	    mg2.setLineColor(Color.decode("#233A3B"));
+	    mg2.setDash(new float[] {3, 3});
+	    guides.addRow(mg2);
+	    
+	    GuideDescriptor mg3 = new GuideDescriptor(Inputs.BOTTOM_GUIDE, "Bottom Guide", -50, -100, 100, 1, true);
+	    mg3.setLineColor(Color.decode("#233A3B"));
+	    mg3.setDash(new float[] {3, 3});
+	    guides.addRow(mg3);
+	    tab.addGroup(guides);
 	    
     // Draw the indicator on the chart
 		 RuntimeDescriptor desc = new RuntimeDescriptor();
 		
-		desc.getPricePlot().setLabelSettings(MTF_MULTIPLIER, MTF_BARSIZE);
-		desc.getPricePlot().setLabelPrefix("SMI");
+		//desc.getPricePlot().setLabelSettings(MTF_MULTIPLIER, MTF_BARSIZE);
+		//desc.getPricePlot().setLabelPrefix("SMI");
 		
 	//SMI Plots	
 	desc.setLabelPrefix("SMI");
@@ -278,7 +283,8 @@ public class vrSMI extends Study
     //Place Markers
     desc.declareSignal(SMISignal.SHALLOW_BULL, "Shallow Bull Pullback");
     desc.declareSignal(SMISignal.SHALLOW_BEAR, "Shallow Bear Pullback");
- 
+    desc.declareSignal(SMISignal.HFT_BULL, "HFT Bull Expansion");
+    desc.declareSignal(SMISignal.HFT_BEAR, "HFT Bear Expansion");
     
     //debug("TopPixels = " + desc.getTopInsetPixels() + "   Bottom Pixels = " + desc.getBottomInsetPixels());
     setRuntimeDescriptor(desc);
@@ -290,49 +296,6 @@ public class vrSMI extends Study
    setMinBars(3000);
   }
   
-  @Override
-  protected void calculateValues(DataContext ctx)
-  {
-    Settings settings = getSettings();
-    if (settings == null) return;
-    MarkerInfo upMarker = settings.getMarker(Inputs.UP_MARKER);
-    MarkerInfo downMarker = settings.getMarker(Inputs.DOWN_MARKER);
-    boolean upEnabled = upMarker != null && upMarker.isEnabled();
-    boolean downEnabled = downMarker != null && downMarker.isEnabled();
-    
-    if (!upEnabled && !downEnabled && !ctx.isSignalEnabled(SMISignal.SHALLOW_BULL) &&
-            !ctx.isSignalEnabled(SMISignal.SHALLOW_BEAR)) return;
-    
-    DataSeries series = ctx.getDataSeries();
-    
-    
-    
-    if (series.size() <= 1) return;
-    Double val = series.getDouble(SMIVal.SMI1);
-    Double prevVal = series.getDouble(series.size()-2, SMIVal.SMI1);
-    Double longVal = series.getDouble(SMIVal.SMI12);
-    
-    int i = series.size()-1;
-    debug("Print i = " + i + "Val" + val);
-    Coordinate c = new Coordinate(series.getStartTime(i), val);
-    
-    if (upEnabled || ctx.isSignalEnabled(SMISignal.SHALLOW_BEAR)) {
-        if ((prevVal < (double) 50.0) && (val > (double)50.0) && (longVal < (double) 0.0))
-        {
-          //series.setBoolean(i, Signals.CROSS_ABOVE, true);
-          String msg = get("Shallow Bear Pullback", format(val), format(longVal), format(series.getClose(i)));
-          if (upEnabled && !series.getBoolean("DOWN_MARKER_ADDED", false)) {
-            addFigure(new Marker(c, Enums.Position.TOP, downMarker, msg));
-            series.setBoolean("DOWN_MARKER_ADDED", true);
-          }
-          ctx.signal(i, SMISignal.SHALLOW_BEAR, msg, round(val));
-        }
-      }
-    
-    
-    
-    
-  }
   @Override  
   protected void calculate(int index, DataContext ctx)
   {
@@ -451,15 +414,16 @@ public class vrSMI extends Study
 		  	    series.setDouble(index, SMIline, SMI);
 
 	    	} 
+	   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	        
       //Add signal generation code
 	        //Short Term Pull-back
 	        
 	        double fastSig = series.getDouble(index, SMIVal.SMI1);
 	        double fastSig2 = series.getDouble(index-1, SMIVal.SMI1);
-	        double slowSig = series.getDouble(index, SMIVal.SMI12);  //SMIValmtf.SMI9 
+	        double slowSig = series.getDouble(index, SMIValmtf.mSMI9);  //SMIValmtf.SMI9 
 	       
-	        info("Index = " + index + "  fastSig = " + round(fastSig)  + "  fastSig2 = " + round(fastSig2)+ "   slowSig = " + round(slowSig));
+	        //info("Index = " + index + "  fastSig = " + round(fastSig)  + "  fastSig2 = " + round(fastSig2)+ "   slowSig = " + round(slowSig));
 	        //debug("Index = " + index + "  KamaPerfect.BEAR = " + series.getBoolean(index, KamaPerfect.BEAR));
 	        
 	        Coordinate c = new Coordinate(series.getStartTime(index), fastSig);
@@ -467,44 +431,76 @@ public class vrSMI extends Study
 	        if ((fastSig2 < (double) 50.0) && (fastSig > (double) 50.0)
 	   	       && (slowSig < (double) 0))
 	        {
-	          
-	         debug("BEAR Index = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
 	          series.setBoolean(index, SMISignal.SHALLOW_BEAR, true);
 	          MarkerInfo marker = getSettings().getMarker(Inputs.DOWN_MARKER);
 	          String msg = get("Shallow Bear Pullback", format(fastSig), format(slowSig), format(series.getClose(index)));
 	          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.TOP, marker, msg));
 	          ctx.signal(index, SMISignal.SHALLOW_BEAR, msg, round(fastSig));
-	          debug("Shallow Bear Pullback");
+	         
 	          
 	        }
-	        else if ((fastSig2 > (double)-50.0) && (fastSig < (double) -50.0)
+	        
+	        if ((fastSig2 > (double)-50.0) && (fastSig < (double) -50.0)
 	             && (slowSig > (double) 0))
-	            //((crossedBelow(SMIVal.SMI1, -50.0)) && (slowSig > 0))
-	        	//&& (series.getBoolean(index, KamaPerfect.BULL) == true))
 	        {
-	           info("BULL Index = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
 	          series.setBoolean(index, SMISignal.SHALLOW_BULL, true);
 	          MarkerInfo marker = getSettings().getMarker(Inputs.UP_MARKER);
 	          String msg = get("Shallow Bull Pullback", format(fastSig), format(slowSig), format(series.getClose(index)));
 	          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
 	          ctx.signal(index, SMISignal.SHALLOW_BULL, msg, round(fastSig));
-	          debug("Shallow Bull Pullback");
+	         
 	        }
 	        
+	        boolean xCrossAbove = false; 
+	        boolean xCrossBelow = false; 
 	        
+	        for (int j = 30; j > 0; j--) {
+	        	
+	        	
+		        if (crossedAbove(series, index-j, SMIValmtf.mSMI1, SMIValmtf.mSMI12)) {
+		        	xCrossAbove = true;
+		        	xCrossBelow = false;
+		        	}
+		        if (crossedBelow(series, index-j, SMIValmtf.mSMI1, SMIValmtf.mSMI12)) {
+		        	xCrossAbove = false;
+		        	xCrossBelow = true;
+		        	}
+		       
+	        }
 	        
+	        fastSig = series.getDouble(index, SMIValmtf.mSMI1);
+	        slowSig = series.getDouble(index, SMIValmtf.mSMI12);
 	        
+	        double Delta = Math.abs(fastSig-slowSig);
 	        
+	        if (xCrossAbove) debug("xcross Delta" + round(Delta) + "  Index = " + index );
 	        
+	        c = new Coordinate(series.getStartTime(index), fastSig);
 	        
+	        if (xCrossAbove && (Delta > (double) 5.0))
+
+		        {
+		           info("EXPANSION = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
+		          series.setBoolean(index, SMISignal.SHALLOW_BULL, true);
+		          MarkerInfo marker = getSettings().getMarker(HFT_BULL_MARKER);
+		          String msg = get("Bull HTF Expansion", format(fastSig), format(slowSig), format(series.getClose(index)));
+		          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
+		          ctx.signal(index, SMISignal.HFT_BULL, msg, round(fastSig));  
+		        }
 	        
+	        if (xCrossBelow && (Delta > (double) 5.0))
+
+	        {
+	           info("EXPANSION = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
+	          series.setBoolean(index, SMISignal.SHALLOW_BEAR, true);
+	          MarkerInfo marker = getSettings().getMarker(HFT_BEAR_MARKER);
+	          String msg = get("Bear HTF Expansion", format(fastSig), format(slowSig), format(series.getClose(index)));
+	          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
+	          ctx.signal(index, SMISignal.HFT_BEAR, msg, round(fastSig));  
+	        }
+        
+	           
 	        
-	        
-	        
-	        
-	        if (!series.isBarComplete(index)) return;
-	
-   
     series.setComplete(index); 
   }
 

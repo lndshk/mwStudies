@@ -1,5 +1,7 @@
 package study_examples;
 
+import java.awt.Color;
+
 import com.motivewave.platform.sdk.common.*;
 import com.motivewave.platform.sdk.common.desc.*;
 import com.motivewave.platform.sdk.study.*;
@@ -20,6 +22,7 @@ import com.motivewave.platform.sdk.common.Util;
  label="Kama",
  desc="Kaufman's Adaptive Moving Average",
  menu="W. VanRip",
+ underlayByDefault = true,
  overlay=true,
  studyOverlay=true)
 public class vrKAMA2 extends Study
@@ -131,24 +134,27 @@ public class vrKAMA2 extends Study
     tab.addGroup(inputs);
     
     SettingGroup colors = new SettingGroup("Fast KAMA Lines");
-    colors.addRow(new PathDescriptor(KAMA_PATH_F1, "Line 1", defaults.getOrange(), 1.0f, 
+    colors.addRow(new PathDescriptor(KAMA_PATH_F1, "Line 1", defaults.getOrange(), 0.5f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_F2, "Line 2", defaults.getGrey(), 1.0f, 
+    colors.addRow(new PathDescriptor(KAMA_PATH_F2, "Line 2", defaults.getGrey(), 0.5f, 
             	  null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_F3, "Line 3", defaults.getGrey(), 1.0f, 
+    colors.addRow(new PathDescriptor(KAMA_PATH_F3, "Line 3", defaults.getGrey(), 0.5f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_F4, "Line 4", defaults.getGrey(), 1.0f, 
+    colors.addRow(new PathDescriptor(KAMA_PATH_F4, "Line 4", defaults.getGrey(), 0.5f, 
                   null, true, true, true));
-    colors.addRow(new PathDescriptor(KAMA_PATH_F5, "Line 5", defaults.getBlue(), 1.0f, 
+    colors.addRow(new PathDescriptor(KAMA_PATH_F5, "Line 5", defaults.getBlue(), 0.5f, 
                   null, true, true, true));
     colors.addRow(new PathDescriptor(KAMA_FAST_T_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
     colors.addRow(new PathDescriptor(KAMA_FAST_B_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
     
-    
-    colors.addRow(new ShadeDescriptor(KAMA_FAST_T_FILL, "Up Wave", KAMA_FAST_T_INVIS, KAMA_FAST_B_INVIS, Enums.ShadeType.ABOVE, defaults.getTopFillColor(), true, true));
-    colors.addRow(new ShadeDescriptor(KAMA_FAST_B_FILL, "Down Wave", KAMA_FAST_T_INVIS, KAMA_FAST_B_INVIS, Enums.ShadeType.BELOW, defaults.getBottomFillColor(), true, true));
+    Color upFillF = new Color(69, 90, 100, 180);
+    Color dnFillF = new Color(255, 200, 210, 110);
+    colors.addRow(new ShadeDescriptor(KAMA_FAST_T_FILL, "Up Wave", KAMA_FAST_T_INVIS, KAMA_FAST_B_INVIS,
+    		Enums.ShadeType.ABOVE, upFillF, true, true));
+    colors.addRow(new ShadeDescriptor(KAMA_FAST_B_FILL, "Down Wave", KAMA_FAST_T_INVIS, KAMA_FAST_B_INVIS,
+    		Enums.ShadeType.BELOW, dnFillF, true, true));
     tab.addGroup(colors);
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +163,7 @@ public class vrKAMA2 extends Study
     tab = new SettingTab("Slow Kama");
     sd.addTab(tab);
 
-    SettingGroup inputs2 = new SettingGroup("Slow KAMA Wave inputs2");
+    SettingGroup inputs2 = new SettingGroup("Slow KAMA Wave Inputs");
 
     //inputs2.addRow(new InputDescriptor(KAMA_INPUT, get("Input"), Enums.BarInput.CLOSE));
     
@@ -179,24 +185,28 @@ public class vrKAMA2 extends Study
     
     tab.addGroup(inputs2);
     
-    SettingGroup colors2 = new SettingGroup("Fast KAMA Lines");
-    colors2.addRow(new PathDescriptor(KAMA_PATH_S1, "Line 1", defaults.getOrange(), 1.0f, 
+    SettingGroup colors2 = new SettingGroup("Slow KAMA Lines");
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S1, "Line 1", defaults.getOrange(), 0.5f, 
                   null, true, true, true));
-    colors2.addRow(new PathDescriptor(KAMA_PATH_S2, "Line 2", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S2, "Line 2", defaults.getGrey(), 0.5f, 
             	  null, true, true, true));
-    colors2.addRow(new PathDescriptor(KAMA_PATH_S3, "Line 3", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S3, "Line 3", defaults.getGrey(), 0.5f, 
                   null, true, true, true));
-    colors2.addRow(new PathDescriptor(KAMA_PATH_S4, "Line 4", defaults.getGrey(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S4, "Line 4", defaults.getGrey(), 0.5f, 
                   null, true, true, true));
-    colors2.addRow(new PathDescriptor(KAMA_PATH_S5, "Line 5", defaults.getBlue(), 1.0f, 
+    colors2.addRow(new PathDescriptor(KAMA_PATH_S5, "Line 5", defaults.getBlue(), 0.5f, 
                   null, true, true, true));
     colors2.addRow(new PathDescriptor(KAMA_SLOW_T_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
     colors2.addRow(new PathDescriptor(KAMA_SLOW_B_INVIS, "Make Invisible", null, 1.0f, 
             null, false, true, true));
     
-    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_T_FILL, "Up Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.ABOVE, defaults.getTopFillColor(), true, true));
-    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_B_FILL, "Down Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, Enums.ShadeType.BELOW, defaults.getBottomFillColor(), true, true));
+    Color upFillS = new Color(69, 90, 100, 100);
+    Color dnFillS = new Color(255, 200, 210, 60);
+    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_T_FILL, "Up Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, 
+    		Enums.ShadeType.ABOVE, upFillS, true, true));
+    colors2.addRow(new ShadeDescriptor(KAMA_SLOW_B_FILL, "Down Wave", KAMA_SLOW_T_INVIS, KAMA_SLOW_B_INVIS, 
+    		Enums.ShadeType.BELOW, dnFillS, true, true));
     tab.addGroup(colors2);
     
     
@@ -306,6 +316,8 @@ public class vrKAMA2 extends Study
 		series.setDouble(index, updateSlowK, currentKama);  // <- Update the series for graphing
 	}
 	
+	
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //////////           KAMA SHADING                                                      /////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
