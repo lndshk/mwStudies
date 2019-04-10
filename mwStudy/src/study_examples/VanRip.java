@@ -34,7 +34,7 @@ import com.motivewave.platform.sdk.study.StudyHeader;
     name="vrBB + SMA",
     desc="This study does all the things",
     menu="W. VanRip",
-    overlay=false,
+    overlay=true,
     signals=true) 
 public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip class
 {

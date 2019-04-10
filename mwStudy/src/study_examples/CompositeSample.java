@@ -39,8 +39,9 @@ import com.motivewave.platform.sdk.study.StudyHeader;
     namespace="com.motivewave", 
     id="COMP_SAMPLE", 
     rb="study_examples.nls.strings", // locale specific strings are loaded from here
-    name="TITLE_COMP_SAMPLE",
-    desc="DESC_COMP_SAMPLE",
+    name="Composite Test",
+    desc="Sample",
+    menu="W. VanRip",
     overlay=false,
     signals=true)
 public class CompositeSample extends com.motivewave.platform.sdk.study.Study 

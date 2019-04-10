@@ -1,51 +1,39 @@
 package study_examples;
 
-import java.awt.Color;
-
-import com.motivewave.platform.sdk.common.Coordinate;
 import com.motivewave.platform.sdk.common.DataContext;
 import com.motivewave.platform.sdk.common.DataSeries;
 import com.motivewave.platform.sdk.common.Defaults;
 import com.motivewave.platform.sdk.common.Enums;
 import com.motivewave.platform.sdk.common.Inputs;
-import com.motivewave.platform.sdk.common.MarkerInfo;
-import com.motivewave.platform.sdk.common.Settings;
 import com.motivewave.platform.sdk.common.desc.GuideDescriptor;
 import com.motivewave.platform.sdk.common.desc.IndicatorDescriptor;
 import com.motivewave.platform.sdk.common.desc.InputDescriptor;
 import com.motivewave.platform.sdk.common.desc.IntegerDescriptor;
 import com.motivewave.platform.sdk.common.desc.MAMethodDescriptor;
-import com.motivewave.platform.sdk.common.desc.MarkerDescriptor;
 import com.motivewave.platform.sdk.common.desc.PathDescriptor;
 import com.motivewave.platform.sdk.common.desc.SettingGroup;
 import com.motivewave.platform.sdk.common.desc.SettingTab;
 import com.motivewave.platform.sdk.common.desc.SettingsDescriptor;
 import com.motivewave.platform.sdk.common.desc.ValueDescriptor;
-import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
-import com.motivewave.platform.sdk.study.Study;
 import com.motivewave.platform.sdk.study.StudyHeader;
-import com.motivewave.platform.sdk.common.Instrument;
-import study_examples.vrKAMA2.FastKamaValues;
-import study_examples.vrKAMA2.KamaPerfect;
-
 import com.motivewave.platform.sdk.common.X11Colors;
 
 /** Stochastic Momentum Index */
 @StudyHeader(
     namespace="com.motivewave", 
-    id="vrSMIcolor", 
+    id="vrSMItester", 
     rb="",
-    name="vrSMI",
+    name="vrSMIrh",
     label="SMI",
-    desc="VanRip SMI colors",
+    desc="VanRip SMI",
     menu="W. VanRip",
     overlay=false,
-    studyOverlay=false,
-    signals = true,
+    studyOverlay=true,
+    signals=false,
     helpLink="http://www.motivewave.com/studies/stochastic_momentum_index.htm")
 
-public class vrSMI extends Study
+public class vrSMIrh extends com.motivewave.platform.sdk.study.Study 
 {
 	enum SMIVal { SMI1, SMI2, SMI3, SMI4, SMI5, SMI6, SMI7, SMI8, SMI9, SMI10, SMI11, SMI12, SMI13};
 	enum SMIValD {D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13};
@@ -60,8 +48,6 @@ public class vrSMI extends Study
 	enum SMIValHL_MAmtf{mHL_MA1,  mHL_MA2, mHL_MA3, mHL_MA4,mHL_MA5, mHL_MA6, mHL_MA7, mHL_MA8, mHL_MA9, mHL_MA10, mHL_MA11, mHL_MA12};
 	
 	enum Values {MA};
-	
-	enum SMISignal{SHALLOW_BULL, SHALLOW_BEAR};
 	
 	  /* *** strings for SMI *** */
 	final static String TEST = "mtfTEST"; 
@@ -85,30 +71,30 @@ public class vrSMI extends Study
 	  final static String SMI_HL1_MTF = "smiHL1mtf"; //SMI MTF settings
 	  final static String SMI_MA1_MTF = "smiMA1mtf";
 	  
-	  final static String SMI_LINE1 = "smiL1";  // 3/5 - SMI Line Settings
-	  final static String SMI_LINE2 = "smiL2";  //4/7
-	  final static String SMI_LINE3 = "smiL3";  //5/9
-	  final static String SMI_LINE4 = "smiL4";  //6/10
-	  final static String SMI_LINE5 = "smiL5";  //7/12
-	  final static String SMI_LINE6 = "smiL6";  //8/14
-	  final static String SMI_LINE7 = "smiL7";  //9/16
-	  final static String SMI_LINE8 = "smiL8";  //10/18
-	  final static String SMI_LINE9 = "smiL9";  //11/20
-	  final static String SMI_LINE10= "smiL10"; //12/22
-	  final static String SMI_LINE11= "smiL11"; //13/24
-	  final static String SMI_LINE12= "smiL12"; //14/26
-	  final static String SMI_LINE13= "smiL13"; //15/28
+	  final static String SMI_LINE1 = "smiL1";  //SMI Line Settings
+	  final static String SMI_LINE2 = "smiL2";
+	  final static String SMI_LINE3 = "smiL3";
+	  final static String SMI_LINE4 = "smiL4";
+	  final static String SMI_LINE5 = "smiL5";
+	  final static String SMI_LINE6 = "smiL6";
+	  final static String SMI_LINE7 = "smiL7";
+	  final static String SMI_LINE8 = "smiL8";
+	  final static String SMI_LINE9 = "smiL9";
+	  final static String SMI_LINE10= "smiL10";
+	  final static String SMI_LINE11= "smiL11";
+	  final static String SMI_LINE12= "smiL12";
+	  final static String SMI_LINE13= "smiL13";
 	  
-	  final static String SMI_LINE1_MTF = "smiL1mtf"; //14/27
-	  final static String SMI_LINE2_MTF = "smiL2mtf"; //15/29
-	  final static String SMI_LINE3_MTF = "smiL3mtf"; //16/31
-	  final static String SMI_LINE4_MTF = "smiL4mtf"; //17/33
-	  final static String SMI_LINE5_MTF = "smiL5mtf"; //18/35
-	  final static String SMI_LINE6_MTF = "smiL6mtf"; //19/37
-	  final static String SMI_LINE7_MTF = "smiL7mtf"; //20/39
-	  final static String SMI_LINE8_MTF = "smiL8mtf"; //21/41
-	  final static String SMI_LINE9_MTF = "smiL9mtf"; //22/43
-	  final static String SMI_LINE10_MTF = "smiL10mtf"; 
+	  final static String SMI_LINE1_MTF = "smiL1mtf";
+	  final static String SMI_LINE2_MTF = "smiL2mtf";
+	  final static String SMI_LINE3_MTF = "smiL3mtf";
+	  final static String SMI_LINE4_MTF = "smiL4mtf";
+	  final static String SMI_LINE5_MTF = "smiL5mtf";
+	  final static String SMI_LINE6_MTF = "smiL6mtf";
+	  final static String SMI_LINE7_MTF = "smiL7mtf";
+	  final static String SMI_LINE8_MTF = "smiL8mtf";
+	  final static String SMI_LINE9_MTF = "smiL9mtf";
+	  final static String SMI_LINE10_MTF = "smiL10mtf";
 	  final static String SMI_LINE11_MTF = "smiL11mtf";
 	  final static String SMI_LINE12_MTF = "smiL12mtf";
 	  
@@ -151,36 +137,36 @@ public class vrSMI extends Study
 		tab.addGroup(inputs);
 		
 		SettingGroup colors4 = new SettingGroup("FAST SMI Line Colors");	
-		colors4.addRow(new PathDescriptor(SMI_LINE1, "Line 1", Color.decode("#ECEFF1"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE2, "Line 2", Color.decode("#CFD8DC"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE3, "Line 3", Color.decode("#B0BEC5"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE4, "Line 4", Color.decode("#90A4AE"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE5, "Line 5", Color.decode("#78909C"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE6, "Line 6", Color.decode("#607D8B"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE7, "Line 7", Color.decode("#546E7A"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE8, "Line 8", Color.decode("#455A64"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE9, "Line 9", Color.decode("#37474F"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE10, "Line 10", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE11, "Line 11", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE12, "Line 12", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE13, "Line 13", Color.decode("#263238"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE1, "Line 1", X11Colors.IVORY, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE2, "Line 2", X11Colors.ORANGE, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE3, "Line 3", X11Colors.DARK_ORANGE, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE4, "Line 4", X11Colors.RED, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE5, "Line 5", X11Colors.DARK_RED, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE6, "Line 6", X11Colors.CYAN, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE7, "Line 7", X11Colors.DODGER_BLUE, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE8, "Line 8", X11Colors.BLUE, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE9, "Line 9", X11Colors.LIME, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE10, "Line 10", X11Colors.GOLD, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE11, "Line 11", X11Colors.YELLOW, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE12, "Line 12", X11Colors.DARK_GRAY, 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE13, "Line 13", X11Colors.DARK_GRAY, 1.0f, null, true, true, true));
 		tab.addGroup(colors4);
 		
 		//////    Guidelines for SMI Chart       //////
 		
 	    SettingGroup guides = new SettingGroup("Guides");
 	    GuideDescriptor mg1 = new GuideDescriptor(Inputs.TOP_GUIDE, "Top Guide", 50, -100, 100, 1, true);
-	    mg1.setLineColor(Color.decode("#233A3B"));
+	    mg1.setLineColor(X11Colors.GREEN);
 	    mg1.setDash(new float[] {3, 3});
 	    guides.addRow(mg1);
 	    
 	    GuideDescriptor mg2 = new GuideDescriptor(Inputs.MIDDLE_GUIDE, "Middle Guide", 0, -100, 100, 1, true);
-	    mg2.setLineColor(Color.decode("#008B8B"));
+	    mg2.setLineColor(X11Colors.IVORY);
 	    mg2.setDash(new float[] {3, 3});
 	    guides.addRow(mg2);
 	    
 	    GuideDescriptor mg3 = new GuideDescriptor(Inputs.BOTTOM_GUIDE, "Bottom Guide", -50, -100, 100, 1, true);
-	    mg3.setLineColor(Color.decode("#233A3B"));
+	    mg3.setLineColor(X11Colors.RED);
 	    mg3.setDash(new float[] {3, 3});
 	    guides.addRow(mg3);
 	    tab.addGroup(guides);
@@ -200,37 +186,23 @@ public class vrSMI extends Study
 		tab.addGroup(inputs);
 		
 		
-		SettingGroup mtfcolor = new SettingGroup("MTF SMI Line Colors");
-		
+		SettingGroup mtfcolor = new SettingGroup("MTF SMI Line Colors");	
 
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE1_MTF, "Line 1", Color.decode("#99C1C2"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE2_MTF, "Line 2", Color.decode("#8AB8B9"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE3_MTF, "Line 3", Color.decode("#7CAFB1"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE4_MTF, "Line 4", Color.decode("#6DA6A8"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE5_MTF, "Line 5", Color.decode("#5F9EA0"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE6_MTF, "Line 6", Color.decode("#579092"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE7_MTF, "Line 7", Color.decode("#4E8283"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE8_MTF, "Line 8", Color.decode("#467375"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE9_MTF, "Line 9", Color.decode("#3D6566"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE10_MTF, "Line 10", Color.decode("#345758"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE11_MTF, "Line 11", Color.decode("#2C4849"), 1.0f, new float[]{4,4}, true, true, true));
-		mtfcolor.addRow(new PathDescriptor(SMI_LINE12_MTF, "Line 12", Color.decode("#233A3B"), 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE1_MTF, "Line 1", X11Colors.BLUE, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE2_MTF, "Line 2", X11Colors.BLUE, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE3_MTF, "Line 3", X11Colors.BLUE, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE4_MTF, "Line 4", X11Colors.LIME, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE5_MTF, "Line 5", X11Colors.LIME, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE6_MTF, "Line 6", X11Colors.LIME, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE7_MTF, "Line 7", X11Colors.GOLD, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE8_MTF, "Line 8", X11Colors.GOLD, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE9_MTF, "Line 9", X11Colors.GOLD, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE10_MTF, "Line 10", X11Colors.DARK_GRAY, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE11_MTF, "Line 11", X11Colors.DARK_GRAY, 1.0f, new float[]{4,4}, true, true, true));
+		mtfcolor.addRow(new PathDescriptor(SMI_LINE12_MTF, "Line 12", X11Colors.DARK_GRAY, 1.0f, new float[]{4,4}, true, true, true));
 		
 		tab.addGroup(mtfcolor);
-		
-		tab = new SettingTab("Markers");
-	    sd.addTab(tab);
-	    
-	    SettingGroup markers = new SettingGroup("Strategy Markers");
-	    
-	   
-	    markers.addRow(new MarkerDescriptor(Inputs.UP_MARKER, "Shallow Bull Pullback", 
-	        Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getGreen(), defaults.getLineColor(), true, true));
-	    markers.addRow(new MarkerDescriptor(Inputs.DOWN_MARKER, "Shallow Bear Pullback", 
-		        Enums.MarkerType.TRIANGLE, Enums.Size.SMALL, defaults.getRed(), defaults.getLineColor(), true, true));
-	    
-	    tab.addGroup(markers);
-	    
+    
     // Draw the indicator on the chart
 		 RuntimeDescriptor desc = new RuntimeDescriptor();
 		
@@ -272,67 +244,20 @@ public class vrSMI extends Study
     desc.setFixedTopValue(80);
     desc.setFixedBottomValue(-80);
     desc.setMinTick(0.1);
-    desc.setTopInsetPixels(1);  //default is 5, setting to 1 to gain chart space
-    desc.setBottomInsetPixels(1);
     
-    //Place Markers
-    desc.declareSignal(SMISignal.SHALLOW_BULL, "Shallow Bull Pullback");
-    desc.declareSignal(SMISignal.SHALLOW_BEAR, "Shallow Bear Pullback");
- 
-    
-    //debug("TopPixels = " + desc.getTopInsetPixels() + "   Bottom Pixels = " + desc.getBottomInsetPixels());
     setRuntimeDescriptor(desc);
   }
   
   @Override
-  public void onLoad(Defaults defaults)
+  public int getMinBars()
   {
-   setMinBars(3000);
+   //return 1000 bars
+    int bars = 2000;
+    return bars;
   }
   
-  @Override
-  protected void calculateValues(DataContext ctx)
-  {
-    Settings settings = getSettings();
-    if (settings == null) return;
-    MarkerInfo upMarker = settings.getMarker(Inputs.UP_MARKER);
-    MarkerInfo downMarker = settings.getMarker(Inputs.DOWN_MARKER);
-    boolean upEnabled = upMarker != null && upMarker.isEnabled();
-    boolean downEnabled = downMarker != null && downMarker.isEnabled();
-    
-    if (!upEnabled && !downEnabled && !ctx.isSignalEnabled(SMISignal.SHALLOW_BULL) &&
-            !ctx.isSignalEnabled(SMISignal.SHALLOW_BEAR)) return;
-    
-    DataSeries series = ctx.getDataSeries();
-    
-    
-    
-    if (series.size() <= 1) return;
-    Double val = series.getDouble(SMIVal.SMI1);
-    Double prevVal = series.getDouble(series.size()-2, SMIVal.SMI1);
-    Double longVal = series.getDouble(SMIVal.SMI12);
-    
-    int i = series.size()-1;
-    debug("Print i = " + i + "Val" + val);
-    Coordinate c = new Coordinate(series.getStartTime(i), val);
-    
-    if (upEnabled || ctx.isSignalEnabled(SMISignal.SHALLOW_BEAR)) {
-        if ((prevVal < (double) 50.0) && (val > (double)50.0) && (longVal < (double) 0.0))
-        {
-          //series.setBoolean(i, Signals.CROSS_ABOVE, true);
-          String msg = get("Shallow Bear Pullback", format(val), format(longVal), format(series.getClose(i)));
-          if (upEnabled && !series.getBoolean("DOWN_MARKER_ADDED", false)) {
-            addFigure(new Marker(c, Enums.Position.TOP, downMarker, msg));
-            series.setBoolean("DOWN_MARKER_ADDED", true);
-          }
-          ctx.signal(i, SMISignal.SHALLOW_BEAR, msg, round(val));
-        }
-      }
-    
-    
-    
-    
-  }
+  
+  
   @Override  
   protected void calculate(int index, DataContext ctx)
   {
@@ -452,55 +377,7 @@ public class vrSMI extends Study
 
 	    	} 
 	        
-      //Add signal generation code
-	        //Short Term Pull-back
-	        
-	        double fastSig = series.getDouble(index, SMIVal.SMI1);
-	        double fastSig2 = series.getDouble(index-1, SMIVal.SMI1);
-	        double slowSig = series.getDouble(index, SMIVal.SMI12);  //SMIValmtf.SMI9 
-	       
-	        info("Index = " + index + "  fastSig = " + round(fastSig)  + "  fastSig2 = " + round(fastSig2)+ "   slowSig = " + round(slowSig));
-	        //debug("Index = " + index + "  KamaPerfect.BEAR = " + series.getBoolean(index, KamaPerfect.BEAR));
-	        
-	        Coordinate c = new Coordinate(series.getStartTime(index), fastSig);
-	        
-	        if ((fastSig2 < (double) 50.0) && (fastSig > (double) 50.0)
-	   	       && (slowSig < (double) 0))
-	        {
-	          
-	         debug("BEAR Index = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
-	          series.setBoolean(index, SMISignal.SHALLOW_BEAR, true);
-	          MarkerInfo marker = getSettings().getMarker(Inputs.DOWN_MARKER);
-	          String msg = get("Shallow Bear Pullback", format(fastSig), format(slowSig), format(series.getClose(index)));
-	          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.TOP, marker, msg));
-	          ctx.signal(index, SMISignal.SHALLOW_BEAR, msg, round(fastSig));
-	          debug("Shallow Bear Pullback");
-	          
-	        }
-	        else if ((fastSig2 > (double)-50.0) && (fastSig < (double) -50.0)
-	             && (slowSig > (double) 0))
-	            //((crossedBelow(SMIVal.SMI1, -50.0)) && (slowSig > 0))
-	        	//&& (series.getBoolean(index, KamaPerfect.BULL) == true))
-	        {
-	           info("BULL Index = " + index + "  fastSig = " + round(fastSig) + "   slowSig = " + round(slowSig));
-	          series.setBoolean(index, SMISignal.SHALLOW_BULL, true);
-	          MarkerInfo marker = getSettings().getMarker(Inputs.UP_MARKER);
-	          String msg = get("Shallow Bull Pullback", format(fastSig), format(slowSig), format(series.getClose(index)));
-	          if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
-	          ctx.signal(index, SMISignal.SHALLOW_BULL, msg, round(fastSig));
-	          debug("Shallow Bull Pullback");
-	        }
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
+      
 	        
 	        if (!series.isBarComplete(index)) return;
 	

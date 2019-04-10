@@ -15,7 +15,7 @@ import com.motivewave.platform.sdk.study.*;
  desc="RSI with error bands",
  menu="W. VanRip",
  overlay=false,
- studyOverlay=true,
+ studyOverlay=false,
  signals=true)
 
 public class vrRSI extends com.motivewave.platform.sdk.study.Study
@@ -106,7 +106,28 @@ public class vrRSI extends com.motivewave.platform.sdk.study.Study
     // Describe the runtime settings using a 'StudyDescriptor'
     RuntimeDescriptor desc = new RuntimeDescriptor();
     
+    desc.setLabelSettings(RSI_INPUT, RSI_PERIOD);
+    desc.setLabelPrefix("RSI");
+    desc.setTabName("RSI");
+    desc.declarePath(RSIValues.RSI, RSI_LINE);
+    desc.declareIndicator(RSIValues.RSI, RSI_IND);
+    desc.setMaxBottomValue(15);
+    desc.setMinTopValue(85);
+    desc.setRangeKeys(RSIValues.RSI);
+    desc.setMinTick(0.1);
+
+    //added bb plot  { BBTOP, INNERTOP, MIDDLE, INNERBOTTOM, BBBOTTOM }
+
+    desc.declarePath(BBValuesrsi.INNERTOP, INNERPATH);
+    desc.declarePath(BBValuesrsi.INNERBOTTOM, INNERPATH);
+    desc.declarePath(BBValuesrsi.BBTOP, OUTERPATH);
+    desc.declarePath(BBValuesrsi.BBBOTTOM, OUTERPATH);
+    
+    
+    
+    
     // RSI Plot
+    /*
     Plot rsiPlot = new Plot();
     desc.addPlot(RSI_PLOT, rsiPlot);
     
@@ -129,6 +150,8 @@ public class vrRSI extends com.motivewave.platform.sdk.study.Study
     rsiPlot.declarePath(BBValuesrsi.INNERBOTTOM, INNERPATH);
     rsiPlot.declarePath(BBValuesrsi.BBTOP, OUTERPATH);
     rsiPlot.declarePath(BBValuesrsi.BBBOTTOM, OUTERPATH);
+    */
+    
     setRuntimeDescriptor(desc);
 
   }

@@ -28,6 +28,7 @@ public class vrKAMA2 extends Study
 	  enum FastKamaShade { TOP, BOTTOM};
 	  enum SlowKamaValues { mKAMA1, mKAMA2, mKAMA3, mKAMA4, mKAMA5 };
 	  enum SlowKamaShade { mTOP, mBOTTOM};
+	  enum KamaPerfect{BULL, BEAR};
 	  
 	  final static String KAMA_INPUT = "kaInput"; //KAMA calculated on close
 	  final static String KAMA_FAST_T_FILL = "kaFastTopFill"; //Fill colors
@@ -236,7 +237,9 @@ public class vrKAMA2 extends Study
   @Override
   public int getMinBars()
   {
-    return getSettings().getInteger(KAMA_SLOW_S1)*2;
+	   //return 1000 bars
+	    int bars = 4000;
+	    return bars;
  
   }
 
@@ -316,6 +319,10 @@ public class vrKAMA2 extends Study
 	    {
 		series.setDouble(index, FastKamaShade.TOP, series.getDouble(index, FastKamaValues.KAMA1));
 		series.setDouble(index, FastKamaShade.BOTTOM, series.getDouble(index, FastKamaValues.KAMA5));
+		series.setBoolean(index, KamaPerfect.BULL, true); //set Bull Flag
+		series.setBoolean(index, KamaPerfect.BEAR, false); //
+		
+		
 		} else if 
 	   ((series.getDouble(index, FastKamaValues.KAMA1) < series.getDouble(index, FastKamaValues.KAMA2)) &&
 	   (series.getDouble(index, FastKamaValues.KAMA2) < series.getDouble(index, FastKamaValues.KAMA3)) &&
@@ -323,10 +330,18 @@ public class vrKAMA2 extends Study
 	   (series.getDouble(index, FastKamaValues.KAMA4) < series.getDouble(index, FastKamaValues.KAMA5))) 
 		{
 		 series.setDouble(index, FastKamaShade.TOP, series.getDouble(index, FastKamaValues.KAMA1));
-	     series.setDouble(index, FastKamaShade.BOTTOM, series.getDouble(index, FastKamaValues.KAMA5));	
+	     series.setDouble(index, FastKamaShade.BOTTOM, series.getDouble(index, FastKamaValues.KAMA5));
+	     series.setBoolean(index, KamaPerfect.BULL, false); //set Bull Flag
+		 series.setBoolean(index, KamaPerfect.BEAR, true); //
+		 //if (series.getBoolean(index, KamaPerfect.BEAR) == null) debug("Bear Null Value");
+		 //info("K2 Index =" + index + "  Bear  = " + series.getBoolean(index, KamaPerfect.BEAR));
+		 
 		} else {
 		 series.setDouble(index, FastKamaShade.TOP, series.getDouble(index, FastKamaValues.KAMA3));
-		 series.setDouble(index, FastKamaShade.BOTTOM, series.getDouble(index, FastKamaValues.KAMA3));	
+		 series.setDouble(index, FastKamaShade.BOTTOM, series.getDouble(index, FastKamaValues.KAMA3));
+		 series.setBoolean(index, KamaPerfect.BULL, false); //set Bull Flag
+		 series.setBoolean(index, KamaPerfect.BEAR, false);
+		 
 		}
 	
 	// SLOW KAMA SHADING
@@ -338,6 +353,7 @@ public class vrKAMA2 extends Study
 	    {
 		series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA1));
 		series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA5));
+
 		} else if 
 	   ((series.getDouble(index, SlowKamaValues.mKAMA1) < series.getDouble(index, SlowKamaValues.mKAMA2)) &&
 	   (series.getDouble(index, SlowKamaValues.mKAMA2) < series.getDouble(index, SlowKamaValues.mKAMA3)) &&
@@ -345,10 +361,10 @@ public class vrKAMA2 extends Study
 	   (series.getDouble(index, SlowKamaValues.mKAMA4) < series.getDouble(index, SlowKamaValues.mKAMA5))) 
 		{
 		 series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA1));
-	     series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA5));	
+	     series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA5));
 		} else {
 		 series.setDouble(index, SlowKamaShade.mTOP, series.getDouble(index, SlowKamaValues.mKAMA3));
-		 series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA3));	
+		 series.setDouble(index, SlowKamaShade.mBOTTOM, series.getDouble(index, SlowKamaValues.mKAMA3));
 		}
 	
 	series.setComplete(index);

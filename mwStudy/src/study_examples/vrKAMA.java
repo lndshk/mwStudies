@@ -77,7 +77,8 @@ public class vrKAMA extends Study
   @Override
   public int getMinBars()
   {
-    return getSettings().getInteger(KAMA_PERIOD)*2;
+	  int bars = 2000;
+	  return bars;
   }
 
   @Override
