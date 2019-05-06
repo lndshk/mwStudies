@@ -44,11 +44,16 @@ import com.motivewave.platform.sdk.study.StudyHeader;
 
 public class vrSMI extends Study
 {
-	enum SMIVal { SMI1, SMI2, SMI3, SMI4, SMI5, SMI6, SMI7, SMI8, SMI9, SMI10, SMI11, SMI12, SMI13};
-	enum SMIValD {D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13};
-	enum SMIValHL {HL1, HL2, HL3, HL4, HL5, HL6, HL7, HL8, HL9, HL10, HL11, HL12, HL13};
-	enum SMIValD_MA{D_MA1, D_MA2, D_MA3, D_MA4, D_MA5, D_MA6, D_MA7, D_MA8, D_MA9, D_MA10, D_MA11, D_MA12, D_MA13};
-	enum SMIValHL_MA {HL_MA1, HL_MA2, HL_MA3, HL_MA4, HL_MA5, HL_MA6, HL_MA7, HL_MA8, HL_MA9, HL_MA10, HL_MA11, HL_MA12, HL_MA13};
+	enum SMIVal { SMI1, SMI2, SMI3, SMI4, SMI5, SMI6, SMI7, SMI8, SMI9, SMI10,
+								SMI11, SMI12, SMI13, SMI14, SMI15, SMI16, SMI17, SMI18, SMI19, SMI20, SMI21, SMI22, SMI23};
+	enum SMIValD {D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,
+								D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23};
+	enum SMIValHL {HL1, HL2, HL3, HL4, HL5, HL6, HL7, HL8, HL9, HL10, 
+								 HL11, HL12, HL13, HL14, HL15, HL16, HL17, HL18, HL19, HL20, HL21, HL22, HL23};
+	enum SMIValD_MA{D_MA1, D_MA2, D_MA3, D_MA4, D_MA5, D_MA6, D_MA7, D_MA8, D_MA9, D_MA10,
+								D_MA11, D_MA12, D_MA13, D_MA14, D_MA15, D_MA16, D_MA17, D_MA18, D_MA19, D_MA20, D_MA21, D_MA22, D_MA23}; 
+	enum SMIValHL_MA {HL_MA1, HL_MA2, HL_MA3, HL_MA4, HL_MA5, HL_MA6, HL_MA7, HL_MA8, HL_MA9, HL_MA10, 
+								HL_MA11, HL_MA12, HL_MA13, HL_MA14, HL_MA15, HL_MA16, HL_MA17, HL_MA18, HL_MA19, HL_MA20, HL_MA21, HL_MA22, HL_MA23}; 
 	
 	enum SMIValmtf {mSMI1, mSMI2, mSMI3, mSMI4,mSMI5, mSMI6, mSMI7, mSMI8, mSMI9, mSMI10, mSMI11, mSMI12};
 	enum SMIValDmtf {mD1,  mD2, mD3, mD4,mD5, mD6, mD7, mD8, mD9, mD10, mD11, mD12};
@@ -82,7 +87,7 @@ public class vrSMI extends Study
 	  final static String SMI_HL1_MTF = "smiHL1mtf"; //SMI MTF settings
 	  final static String SMI_MA1_MTF = "smiMA1mtf";
 	  
-	  final static String SMI_LINE1 = "smiL1";  // 3/5 - SMI Line Settings
+	  final static String SMI_LINE1 = "smiL1";  //3/5 - SMI Line Settings
 	  final static String SMI_LINE2 = "smiL2";  //4/7
 	  final static String SMI_LINE3 = "smiL3";  //5/9
 	  final static String SMI_LINE4 = "smiL4";  //6/11
@@ -94,7 +99,17 @@ public class vrSMI extends Study
 	  final static String SMI_LINE10= "smiL10"; //12/23
 	  final static String SMI_LINE11= "smiL11"; //13/25
 	  final static String SMI_LINE12= "smiL12"; //14/27
-	  final static String SMI_LINE13= "smiL13"; //15/29
+		final static String SMI_LINE13= "smiL13"; //15/29
+		final static String SMI_LINE14 = "smiL14"; //16/31
+	  final static String SMI_LINE15 = "smiL15"; //17/33
+	  final static String SMI_LINE16 = "smiL16"; //18/35
+	  final static String SMI_LINE17 = "smiL17"; //19/37
+	  final static String SMI_LINE18 = "smiL18"; //20/39
+	  final static String SMI_LINE19 = "smiL19"; //21/41
+	  final static String SMI_LINE20= "smiL20"; //22/43
+	  final static String SMI_LINE21= "smiL21"; //23/45
+	  final static String SMI_LINE22= "smiL22"; //24/47
+	  final static String SMI_LINE23= "smiL23"; //25/49
 	  
 	  final static String SMI_LINE1_MTF = "smiL1mtf"; //14/27
 	  final static String SMI_LINE2_MTF = "smiL2mtf"; //15/29
@@ -150,23 +165,39 @@ public class vrSMI extends Study
 		inputs.addRow(new IndicatorDescriptor(Inputs.IND, get("LBL_INDICATOR"), null, null, false, true, true));
 		tab.addGroup(inputs);
 		
-		SettingGroup colors4 = new SettingGroup("FAST SMI Line Colors");	
+		SettingGroup colors4 = new SettingGroup("LTF SMI Line Colors");	
 		colors4.addRow(new PathDescriptor(SMI_LINE1, "Line 1", Color.decode("#ECEFF1"), 1.0f, null, true, true, true));
 		colors4.addRow(new PathDescriptor(SMI_LINE2, "Line 2", Color.decode("#CFD8DC"), 1.0f, null, true, true, true));
 		colors4.addRow(new PathDescriptor(SMI_LINE3, "Line 3", Color.decode("#B0BEC5"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE4, "Line 4", Color.decode("#90A4AE"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE5, "Line 5", Color.decode("#78909C"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE6, "Line 6", Color.decode("#607D8B"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE7, "Line 7", Color.decode("#546E7A"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE8, "Line 8", Color.decode("#455A64"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE9, "Line 9", Color.decode("#37474F"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE10, "Line 10", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE11, "Line 11", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE12, "Line 12", Color.decode("#263238"), 1.0f, null, true, true, true));
-		colors4.addRow(new PathDescriptor(SMI_LINE13, "Line 13", Color.decode("#263238"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE4, "Line 4", Color.decode("#B0BEC5"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE5, "Line 5", Color.decode("#90A4AE"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE6, "Line 6", Color.decode("#90A4AE"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE7, "Line 7", Color.decode("#78909C"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE8, "Line 8", Color.decode("#78909C"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE9, "Line 9", Color.decode("#607D8B"), 1.0f, null, true, true, true));
+		colors4.addRow(new PathDescriptor(SMI_LINE10, "Line 10", Color.decode("#607D8B"), 1.0f, null, true, true, true));
+
 		tab.addGroup(colors4);
 		
+    tab = new SettingTab("LTF 2");
+			sd.addTab(tab);
+			SettingGroup colors5 = new SettingGroup("LTF SMI Line Colors");	
 
+			colors5.addRow(new PathDescriptor(SMI_LINE11, "Line 11", Color.decode("#546E7A"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE12, "Line 12", Color.decode("#546E7A"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE13, "Line 13", Color.decode("#455A64"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE14, "Line 14", Color.decode("#455A64"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE15, "Line 15", Color.decode("#37474F"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE16, "Line 16", Color.decode("#37474F"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE17, "Line 17", Color.decode("#37474F"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE18, "Line 18", Color.decode("#37474F"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE19, "Line 19", Color.decode("#263238"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE20, "Line 20", Color.decode("#263238"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE21, "Line 21", Color.decode("#263238"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE22, "Line 22", Color.decode("#263238"), 1.0f, null, true, true, true));
+			colors5.addRow(new PathDescriptor(SMI_LINE23, "Line 23", Color.decode("#263238"), 1.0f, null, true, true, true));
+	
+			tab.addGroup(colors5);
 	    
 		/*  SMI MTF Input Tab   */  /* Stochastic Momentum Index */
 
@@ -258,7 +289,18 @@ public class vrSMI extends Study
     desc.declarePath(SMIVal.SMI10, SMI_LINE10); 
     desc.declarePath(SMIVal.SMI11, SMI_LINE11); 
     desc.declarePath(SMIVal.SMI12, SMI_LINE12); 
-    desc.declarePath(SMIVal.SMI13, SMI_LINE13); 
+		desc.declarePath(SMIVal.SMI13, SMI_LINE13); 
+		desc.declarePath(SMIVal.SMI14, SMI_LINE14); 
+    desc.declarePath(SMIVal.SMI15, SMI_LINE15); 
+    desc.declarePath(SMIVal.SMI16, SMI_LINE16); 
+    desc.declarePath(SMIVal.SMI17, SMI_LINE17); 
+    desc.declarePath(SMIVal.SMI18, SMI_LINE18); 
+    desc.declarePath(SMIVal.SMI19, SMI_LINE19); 
+    desc.declarePath(SMIVal.SMI20, SMI_LINE20); 
+    desc.declarePath(SMIVal.SMI21, SMI_LINE21); 
+    desc.declarePath(SMIVal.SMI22, SMI_LINE22); 
+    desc.declarePath(SMIVal.SMI23, SMI_LINE23); 
+
   
     desc.declarePath(SMIValmtf.mSMI1, SMI_LINE1_MTF); 
     desc.declarePath(SMIValmtf.mSMI2, SMI_LINE2_MTF); 
@@ -304,13 +346,18 @@ public class vrSMI extends Study
 	        //////////          CALCULATION SMI                                                        /////////
 	        ////////////////////////////////////////////////////////////////////////////////////////////////
 	    	
-	    	final String[] SMIenum = {"SMI1", "SMI2", "SMI3", "SMI4", "SMI5", "SMI6", "SMI7", "SMI8", "SMI9", "SMI10", "SMI11", "SMI12", "SMI13" };
-	    	final String[] SMIenumD = {"D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13" };
-	    	final String[] SMIenumHL = {"HL1", "HL2", "HL3", "HL4", "HL5", "HL6", "HL7", "HL8", "HL9", "HL10", "HL11", "HL12", "HL13" };
-	    	final String[] SMIenumD_MA = {"D_MA1", "D_MA2", "D_MA3", "D_MA4", "D_MA5", "D_MA6", "D_MA7", "D_MA8", "D_MA9", "D_MA10", "D_MA11", "D_MA12", "D_MA13" };
-	        final String[] SMIenumHL_MA = {"HL_MA1", "HL_MA2", "HL_MA3", "HL_MA4", "HL_MA5", "HL_MA6", "HL_MA7", "HL_MA8", "HL_MA9", "HL_MA10", "HL_MA11", "HL_MA12", "HL_MA13" };
+				final String[] SMIenum = {"SMI1", "SMI2", "SMI3", "SMI4", "SMI5", "SMI6", "SMI7", "SMI8", "SMI9", "SMI10", "SMI11", "SMI12", "SMI13", 
+																"SMI14", "SMI15", "SMI16", "SMI17", "SMI18", "SMI19", "SMI20", "SMI21", "SMI22", "SMI23" };
+				final String[] SMIenumD = {"D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", 
+																"D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23" };
+				final String[] SMIenumHL = {"HL1", "HL2", "HL3", "HL4", "HL5", "HL6", "HL7", "HL8", "HL9", "HL10", "HL11", "HL12", "HL13",
+																"HL14", "HL15", "HL16", "HL17", "HL18", "HL19", "HL20", "HL21", "HL22", "HL23" };
+				final String[] SMIenumD_MA = {"D_MA1", "D_MA2", "D_MA3", "D_MA4", "D_MA5", "D_MA6", "D_MA7", "D_MA8", "D_MA9", "D_MA10", "D_MA11", "D_MA12", "D_MA13",
+																"D_MA14", "D_MA15", "D_MA16", "D_MA17", "D_MA18", "D_MA19", "D_MA20", "D_MA21", "D_MA22", "D_MA23" }; 
+				final String[] SMIenumHL_MA = {"HL_MA1", "HL_MA2", "HL_MA3", "HL_MA4", "HL_MA5", "HL_MA6", "HL_MA7", "HL_MA8", "HL_MA9", "HL_MA10", "HL_MA11", "HL_MA12", "HL_MA13",
+																"HL_MA14", "HL_MA15", "HL_MA16", "HL_MA17", "HL_MA18", "HL_MA19", "HL_MA20", "HL_MA21", "HL_MA22", "HL_MA23" };
    
-	        for(int i = 0; i <= 12; i++)  // i + 1-> Loop 13 times
+	        for(int i = 0; i <= 22; i++)  // i + 1-> Loop 23 times
 	    	{
 	        	SMIVal SMIline = SMIVal.valueOf(SMIenum[i]);
 	        	SMIValD SMIlineD = SMIValD.valueOf(SMIenumD[i]);
@@ -421,7 +468,7 @@ public class vrSMI extends Study
 	        
 	        double fastSig = series.getDouble(index, SMIVal.SMI1);
 	        double fastSig2 = series.getDouble(index-1, SMIVal.SMI1);
-	        double slowSig = series.getDouble(index, SMIValmtf.mSMI9);  //SMIValmtf.SMI9 
+	        double slowSig = series.getDouble(index, SMIVal.SMI20);  //SMIValmtf.SMI9 
 	       
 	        //info("Index = " + index + "  fastSig = " + round(fastSig)  + "  fastSig2 = " + round(fastSig2)+ "   slowSig = " + round(slowSig));
 	        //debug("Index = " + index + "  KamaPerfect.BEAR = " + series.getBoolean(index, KamaPerfect.BEAR));

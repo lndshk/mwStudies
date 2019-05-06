@@ -133,21 +133,21 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     //desc.declareSignal(Signals.RSI_BOTTOM, get("RSI_BOTTOM"));
     
     // Price plot (moving average)
-    desc.getPricePlot().setLabelSettings(MA_INPUT, MA_PERIOD);
-    desc.getPricePlot().setLabelPrefix("MA");
-    desc.getPricePlot().declarePath(MAValues.MA, MA_PATH);
-    desc.getPricePlot().declareIndicator(MAValues.MA, MA_INDICATOR);
+    desc.setLabelSettings(MA_INPUT, MA_PERIOD);
+    desc.setLabelPrefix("MA");
+    desc.declarePath(MAValues.MA, MA_PATH);
+    desc.declareIndicator(MAValues.MA, MA_INDICATOR);
 
     // Bollinger Band on the price plots
-    desc.getPricePlot().declarePath(BBValues.BB1L, BB_STD_L1);  
-    desc.getPricePlot().declarePath(BBValues.BB1U, BB_STD_L1);
-    desc.getPricePlot().declarePath(BBValues.BB2L, BB_STD_L2);
-    desc.getPricePlot().declarePath(BBValues.BB2U, BB_STD_L2);
-    desc.getPricePlot().declarePath(BBValues.BB3L, BB_STD_L3);
-    desc.getPricePlot().declarePath(BBValues.BB3U, BB_STD_L3);
-    desc.getPricePlot().declarePath(BBValues.BB4L, BB_STD_L4);
-    desc.getPricePlot().declarePath(BBValues.BB4U, BB_STD_L4);
-    desc.getPricePlot().declarePath(BBValues.MID, BB_PATH);
+    desc.declarePath(BBValues.BB1L, BB_STD_L1);  
+    desc.declarePath(BBValues.BB1U, BB_STD_L1);
+    desc.declarePath(BBValues.BB2L, BB_STD_L2);
+    desc.declarePath(BBValues.BB2U, BB_STD_L2);
+    desc.declarePath(BBValues.BB3L, BB_STD_L3);
+    desc.declarePath(BBValues.BB3U, BB_STD_L3);
+    desc.declarePath(BBValues.BB4L, BB_STD_L4);
+    desc.declarePath(BBValues.BB4U, BB_STD_L4);
+    desc.declarePath(BBValues.MID, BB_PATH);
   }
 
   @Override
@@ -173,8 +173,6 @@ public class VanRip extends com.motivewave.platform.sdk.study.Study //VanRip cla
     
     series.setDouble(index, MAValues.MA, simpleMA);
     
-    debug("Index = " + index + "  MA value = " + simpleMA);
-    debug("Index = " + index + "  MA input = " + inputMA + "  MA Period" + periodMA + "  methodMA" + methodMA);
     //Bollinger Bands
 
     Object bbinput= getSettings().getInput(BB_INPUT);
