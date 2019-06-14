@@ -59,6 +59,7 @@ import study_examples.vrRSI.RSIValues;
     overlay= false,
     signals = true,
     underlayByDefault = true,
+    supportsBarUpdates = true,
     requiresBarUpdates = true) 
 
 public class vrFrameWork extends com.motivewave.platform.sdk.study.Study 
@@ -332,7 +333,6 @@ public class vrFrameWork extends com.motivewave.platform.sdk.study.Study
 	    inputsMa.addRow(new IntegerDescriptor(MA_PERIOD, "Period", 200, 1, 300, 1),
 				   new MAMethodDescriptor(MA_METHOD, "Method", Enums.MAMethod.EMA),
 				   new InputDescriptor(MA_INPUT, "Input", Enums.BarInput.CLOSE));
-
 	    inputsMa.addRow(new PathDescriptor(MA_PATH, "Line Color", defaults.getYellow(), 1.5f, null, true, true, true));
 	    inputsMa.addRow(new IndicatorDescriptor(MA_INDICATOR,"Line Label", null, null, false, true, true));
 	    tab.addGroup(inputsMa); 

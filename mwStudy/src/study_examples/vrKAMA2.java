@@ -284,7 +284,7 @@ public class vrKAMA2 extends Study
 		int kaSlow = getSettings().getInteger(FastKamaSlow[i]);
 		double prevKama = 0.000000000000001;  //initialize the previous Kama
 		
-		if (index > period*3) {
+		if ((index > period*3) && (series.getDouble(index-1, updateFastK) != null)) {
 			prevKama = series.getDouble(index-1, updateFastK);
     		} 
     
@@ -308,7 +308,7 @@ public class vrKAMA2 extends Study
 		int kaSlow = getSettings().getInteger(SlowKamaSlow[i]);
 		double prevKama = 0.000000000000001;  //initialize the previous Kama
 		
-		if (index > period*3) {
+		if ((index > period*3) && (series.getDouble(index-1, updateSlowK) != null)) {
 			prevKama = series.getDouble(index-1, updateSlowK);
     		} 
     
