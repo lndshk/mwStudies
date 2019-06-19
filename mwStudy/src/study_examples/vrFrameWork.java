@@ -1074,9 +1074,9 @@ public class vrFrameWork extends com.motivewave.platform.sdk.study.Study
   {
 				DataSeries series = ctx.getDataSeries(); 
 				int myIndex = series.size() -1;  //set new index
-				debug ("Entered Calculate Values Loop " );
+				//debug ("Entered Calculate Values Loop " );
 				
-				debug ("Counter Loop size equals" + series.getInt(0, Counter.LOOP ));
+				//debug ("Counter Loop size equals" + series.getInt(0, Counter.LOOP ));
 
 				boolean dataInitialized;
 				
@@ -1360,6 +1360,7 @@ public class vrFrameWork extends com.motivewave.platform.sdk.study.Study
 	for (int z = 0; z <= myIndex; z++) {
 	
 	if ((dataInitialized) && (z < myIndex-10)) continue;
+	if (series.getDouble(z, FastKamaValues.KAMA1) == null || series.getDouble(z, FastKamaValues.KAMA5)== null ) continue;
 		
 	Double FDelta = Math.abs(series.getDouble(z, FastKamaValues.KAMA1)-series.getDouble(z, FastKamaValues.KAMA5));
 	Double SDelta = Math.abs(series.getDouble(z, SlowKamaValues.mKAMA1)-series.getDouble(z, SlowKamaValues.mKAMA5));
