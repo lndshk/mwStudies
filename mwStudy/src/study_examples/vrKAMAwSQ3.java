@@ -13,14 +13,14 @@ import com.motivewave.platform.sdk.study.*;
 /** KAMA with Squeeze */
 @StudyHeader(
     namespace="com.mycompany", 
-    id="vr2KAMAwSW", 
-    name="KAMA (2 Bands)",
+    id="vr2KAMAwSWnewest", 
+    name="Newest",
     desc="Kaufman's Adaptive Moving Average with Volatility Bands",
     menu="W. VanRip",
     underlayByDefault = true,
     overlay=true,
     signals=true)
-public class vrKAMAwSQ2 extends Study 
+public class vrKAMAwSQ3 extends Study 
 {
 	
 //  Variable Names
@@ -38,7 +38,7 @@ public class vrKAMAwSQ2 extends Study
 						 
 	enum Signals 	   {CROSS_ABOVE_FAST_VOL_TOP, CROSS_BELOW_FAST_VOL_BOTTOM, FAST_BAND_SQUEEZE,
 						CROSS_ABOVE_SLOW_VOL_TOP, CROSS_BELOW_SLOW_VOL_BOTTOM, SLOW_BAND_SQUEEZE,
-						DEEP_PULLBACK_BULL, DEEP_PULLBACK_BEAR};
+						DEEP_PULLBACK_BULL, DEEP_PULLBACK_BEAR, NO_TREND_FAST, NO_TREND_SLOW	};
 	
 	//Fast KAMA and Volatility Settings
 	final static String FastKamaPeriod 		 = "fastKPeriod";
@@ -84,6 +84,13 @@ public class vrKAMAwSQ2 extends Study
 	final static String Fast_SQ_Inv_B2    	 = "Fast_SQ_invB2";
 	final static String Fast_SQ_FILL_T    	 = "Fast_SQ_FillT";
 	final static String Fast_SQ_FILL_B    	 = "Fast_SQ_FillB";
+	
+	final static String Fast_NoTrend_Color	 = "FastNTColor";
+	final static String Fast_K1Trend_Color	 = "FastNTColork1";
+	final static String Fast_K2Trend_Color	 = "FastNTColork2";
+	final static String Fast_K3Trend_Color	 = "FastNTColork3";
+	final static String Fast_K4Trend_Color	 = "FastNTColork4";
+	final static String Fast_K5Trend_Color	 = "FastNTColork5";
 	
 	//Slow KAMA and Volatility Settings
 	final static String SlowKamaPeriod 		 = "slowKPeriod";
@@ -153,6 +160,11 @@ public class vrKAMAwSQ2 extends Study
 	final static String DEEP_PULLBACK_BULL_MARKER   = "DeepPB_BullMkr";
 	final static String DEEP_PULLBACK_BEAR_MARKER   = "DeepPB_BearMkr";
 	
+	//final static String NO_TREND_FAST		 = "NoTrendFast";
+	//final static String NO_TREND_SLOW	     = "NoTrendSlow";
+	final static String Fast_NoTrend_Marker  = "FastNTMkr";
+	final static String Slow_NoTrend_Marker  = "SlowNTMkr";
+	
 //  Initialize the Settings
 	@Override
 	  public void initialize(Defaults defaults)
@@ -178,11 +190,16 @@ public class vrKAMAwSQ2 extends Study
 	    tab.addGroup(colors);  
 	    
 	    /* Band Markers */
-	    SettingGroup markers = new SettingGroup("Deep Pullback Markers");
+	    SettingGroup markers = new SettingGroup("Markers");
 	    markers.addRow(new MarkerDescriptor(DEEP_PULLBACK_BULL_MARKER, "Deep Pullback Bull Marker", 
 	            Enums.MarkerType.TRIANGLE, Enums.Size.LARGE, defaults.getBlue(), defaults.getLineColor(), true, true));
 	    markers.addRow(new MarkerDescriptor(DEEP_PULLBACK_BEAR_MARKER, "Deep Pullback Bear Marker", 
 	            Enums.MarkerType.TRIANGLE, Enums.Size.LARGE, defaults.getPurple(), defaults.getLineColor(), true, true));
+	    
+	    markers.addRow(new MarkerDescriptor(Fast_NoTrend_Marker, "Fast - No Trend Marker", 
+	            Enums.MarkerType.CIRCLE, Enums.Size.MEDIUM, defaults.getBlue(), defaults.getLineColor(), true, true));
+	    markers.addRow(new MarkerDescriptor(Slow_NoTrend_Marker, "Slow - No Trend Marker", 
+	            Enums.MarkerType.CIRCLE, Enums.Size.LARGE, defaults.getGrey(), defaults.getLineColor(), true, true));
 	    tab.addGroup(markers);
 	    
 	    /* NEW TAB */
@@ -213,11 +230,18 @@ public class vrKAMAwSQ2 extends Study
 	    
 	    Color upFill = new Color(69, 90, 100, 180);  // KAMA Wave Shading Color
 	    Color dnFill = new Color(255, 200, 210, 110);
+	    Color FastNoTrendColor = new Color(0, 255, 255, 255);
 	    
 	    colors.addRow(new ShadeDescriptor(FastKamaBullShade, "Up Wave", FastKamaPath1, FastKamaPath_Inv,
 	    		Enums.ShadeType.ABOVE, upFill, true, true));
 	    colors.addRow(new ShadeDescriptor(FastKamaBearShade, "Down Wave", FastKamaPath1, FastKamaPath_Inv,
 	    		Enums.ShadeType.BELOW, dnFill, true, true));
+	    colors.addRow(new ColorDescriptor(Fast_NoTrend_Color, "Line Color when Not Trend", FastNoTrendColor));
+	    colors.addRow(new ColorDescriptor(Fast_K1Trend_Color, "K1 Line Color Default", defaults.getOrange()));
+	    colors.addRow(new ColorDescriptor(Fast_K2Trend_Color, "K2 Line Color Default", defaults.getGrey()));
+	    colors.addRow(new ColorDescriptor(Fast_K3Trend_Color, "K3 Line Color Default", defaults.getGrey()));
+	    colors.addRow(new ColorDescriptor(Fast_K4Trend_Color, "K4 Line Color Default", defaults.getGrey()));
+	    colors.addRow(new ColorDescriptor(Fast_K5Trend_Color, "K5 Line Color Default", defaults.getBlue()));
 	    tab.addGroup(colors);
 	    
 	    
@@ -492,19 +516,19 @@ public class vrKAMAwSQ2 extends Study
 	    desc.declarePath(SlowBandLines.SlowBandInvB2, Slow_SQ_Inv_B2);
 	    
 	    // Signals
-	    //desc.declareSignal(Signals.CROSS_ABOVE_FAST_VOL_TOP, "Fast UBand Hit");
-	    //desc.declareSignal(Signals.CROSS_BELOW_FAST_VOL_BOTTOM, "Fast LBand Hit");
+	    desc.declareSignal(Signals.CROSS_ABOVE_FAST_VOL_TOP, "Fast UBand Hit");
+	    desc.declareSignal(Signals.CROSS_BELOW_FAST_VOL_BOTTOM, "Fast LBand Hit");
 	    desc.declareSignal(Signals.FAST_BAND_SQUEEZE, "Fast Squeeze");
 	    
 	    desc.declareSignal(Signals.CROSS_ABOVE_SLOW_VOL_TOP, "Slow UBand Hit");
 	    desc.declareSignal(Signals.CROSS_BELOW_SLOW_VOL_BOTTOM, "Slow LBand Hit");
 	    desc.declareSignal(Signals.SLOW_BAND_SQUEEZE, "Slow Squeeze");
 	    
-	    desc.declareSignal(Signals.CROSS_BELOW_SLOW_VOL_BOTTOM, "Slow LBand Hit");
-	    desc.declareSignal(Signals.SLOW_BAND_SQUEEZE, "Slow Squeeze");
-	    
 	    desc.declareSignal(Signals.DEEP_PULLBACK_BULL, "Deep Bull Pullback");
 	    desc.declareSignal(Signals.DEEP_PULLBACK_BEAR, "Deep Bear Pullback");
+	    
+	    desc.declareSignal(Signals.NO_TREND_FAST, "Fast No Trend");
+	    desc.declareSignal(Signals.NO_TREND_SLOW, "Slow No Trend");
 	    
 	    
 	    setRuntimeDescriptor(desc);
@@ -579,8 +603,8 @@ public class vrKAMAwSQ2 extends Study
 		    				}	
 		    	
 	      Double fbStdDevs = series.std(latest, fbPeriod, FastKamaLines.valueOf(kamastring));  //std dev on Kama
-	      //Double bbStdDevma = series.getDouble(i, FastBandLines.valueOf(kamastring));  //old ma method
-		  Double fbStdDevma = series.ma(fbMethod, latest, fbPeriod, FastKamaLines.valueOf(kamastring)); 
+	      Double fbStdDevma = series.getDouble(latest, FastKamaLines.valueOf(kamastring));  //old ma method
+		  //Double fbStdDevma = series.ma(fbMethod, latest, fbPeriod, FastKamaLines.valueOf(kamastring)); 
 	 
 	      if (fbStdDevs == null) fbStdDevs = 0.0;
 	      if (fbStdDevma == null) fbStdDevma = 0.0;
@@ -596,6 +620,8 @@ public class vrKAMAwSQ2 extends Study
 	      //series.setDouble( latest, FastBandLines.MID, fbStdDevma);  //not used
 	      series.setDouble( latest, FastBandLines.FastKamaSTD, fbStdDevs);
 		  
+		  checkDeepPullBackBull(ctx, latest);
+		  checkDeepPullBackBear(ctx, latest);
 	      
 	  }  //end of doUpdate loop
 	
@@ -698,7 +724,7 @@ public class vrKAMAwSQ2 extends Study
 		} //end kamaline method for SLOW lines
 	  
 	  //Determine if Fast KAMA lines are in order
-	  private void checkPerfectFast(DataContext ctx, int i) {
+	  public void checkPerfectFast(DataContext ctx, int i) {
 		  DataSeries series=ctx.getDataSeries();
 		  Double f1 = series.getDouble(i, FastKamaLines.KAMA1);
 		  Double f2 = series.getDouble(i, FastKamaLines.KAMA2);
@@ -712,19 +738,37 @@ public class vrKAMAwSQ2 extends Study
 				series.setDouble(i, FastKamaLines.KAMAt, series.getDouble(i, FastKamaLines.KAMA5));
 				series.setBoolean(i, FastKamaShade.BULLPERFECT, true);  //set BULLPERFECT flag
 				series.setBoolean(i, FastKamaShade.BEARPERFECT, false);  //set BearPERFECT flag
+				series.setPathColor(i, FastKamaLines.KAMA1,getSettings().getColor(Fast_K1Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA2,getSettings().getColor(Fast_K2Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA3,getSettings().getColor(Fast_K3Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA4,getSettings().getColor(Fast_K4Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA5,getSettings().getColor(Fast_K5Trend_Color));
 			  }
 		  else if (f1<f2 && f2<f3 && f3<f4 && f4<f5)
 		  	  {
 			    series.setDouble(i, FastKamaLines.KAMAt, series.getDouble(i, FastKamaLines.KAMA5));  
 			    series.setBoolean(i, FastKamaShade.BULLPERFECT, false);  //set BULLPERFECT flag
 				series.setBoolean(i, FastKamaShade.BEARPERFECT, true);  //set BearPERFECT flag
+			
+				series.setPathColor(i, FastKamaLines.KAMA1,getSettings().getColor(Fast_K1Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA2,getSettings().getColor(Fast_K2Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA3,getSettings().getColor(Fast_K3Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA4,getSettings().getColor(Fast_K4Trend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA5,getSettings().getColor(Fast_K5Trend_Color));
 		  	  }
 		  else
 		  	  {
 			    series.setDouble(i, FastKamaLines.KAMAt, series.getDouble(i, FastKamaLines.KAMA1));
 			    series.setBoolean(i, FastKamaShade.BULLPERFECT, false);  //set BULLPERFECT flag
 				series.setBoolean(i, FastKamaShade.BEARPERFECT, false);  //set BearPERFECT flag
+				
+				series.setPathColor(i, FastKamaLines.KAMA1, getSettings().getColor(Fast_NoTrend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA2, getSettings().getColor(Fast_NoTrend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA3, getSettings().getColor(Fast_NoTrend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA4, getSettings().getColor(Fast_NoTrend_Color));
+				series.setPathColor(i, FastKamaLines.KAMA5, getSettings().getColor(Fast_NoTrend_Color));
 		  	  }
+		  
 	     }  //end of checkPerfectFast
 	  
 	  //Determine if Slow KAMA lines are in order
@@ -761,7 +805,7 @@ public class vrKAMAwSQ2 extends Study
 	  public void paintBarColor(DataContext ctx, int i) {
 		  DataSeries series=ctx.getDataSeries();
 		  
-		  if (series.getBoolean(i, SlowKamaShade.BULLPERFECTs) == true)  //Bull Shading
+		  if (series.getBoolean(i, SlowKamaShade.BULLPERFECTs, false) == true)  //Bull Shading
 				  {
 			        if(series.getClose(i) > series.getClose(i-1))
 			        		{	
@@ -773,7 +817,7 @@ public class vrKAMAwSQ2 extends Study
 			        		}
 				  }
 		  
-		  else if (series.getBoolean(i, SlowKamaShade.BEARPERFECTs) == true)  //Bear Shading
+		  else if (series.getBoolean(i, SlowKamaShade.BEARPERFECTs, false) == true)  //Bear Shading
 				  {
 			        if(series.getClose(i) > series.getClose(i-1))
 			        		{	
@@ -1015,7 +1059,7 @@ public class vrKAMAwSQ2 extends Study
 	    Coordinate c = new Coordinate(series.getStartTime(i-1), top);
 	    if (crossedAbove(series, i, Enums.BarInput.CLOSE, FastBandLines.BB3U) 
 	    		&& !series.getBoolean(i, Signals.CROSS_ABOVE_FAST_VOL_TOP, false)
-	    		&& series.getBoolean(i,  FastKamaShade.BULLPERFECT, false)) 
+	    		&& series.getBoolean(i,  FastKamaShade.BEARPERFECT, false)) 
 		    {
 		      series.setBoolean(i, Signals.CROSS_ABOVE_FAST_VOL_TOP, true);
 		      MarkerInfo marker = getSettings().getMarker(Fast_Band_XmarkerUP);
@@ -1034,7 +1078,7 @@ public class vrKAMAwSQ2 extends Study
 	    Coordinate c = new Coordinate(series.getStartTime(i-1), bottom);
 	    if (crossedBelow(series, i, Enums.BarInput.CLOSE, FastBandLines.BB3L) 
 	    		&& !series.getBoolean(i, Signals.CROSS_BELOW_FAST_VOL_BOTTOM, false) 
-	    		&& series.getBoolean(i,  FastKamaShade.BEARPERFECT, false)) 
+	    		&& series.getBoolean(i,  FastKamaShade.BULLPERFECT, false)) 
 		    {
 		      series.setBoolean(i, Signals.CROSS_BELOW_FAST_VOL_BOTTOM, true);
 		      MarkerInfo marker = getSettings().getMarker(Fast_Band_XmarkerDN);
@@ -1052,8 +1096,8 @@ public class vrKAMAwSQ2 extends Study
 	    if (top == null) return;
 	    Coordinate c = new Coordinate(series.getStartTime(i-1), top);
 	    if (crossedAbove(series, i, Enums.BarInput.CLOSE, SlowBandLines.BB3Us) 
-	    		&& !series.getBoolean(i, Signals.CROSS_ABOVE_SLOW_VOL_TOP, false)
-	    		&& series.getBoolean(i, SlowKamaShade.BEARPERFECTs, false)) 
+	    		&& !series.getBoolean(i, Signals.CROSS_ABOVE_SLOW_VOL_TOP, false))
+	    	
 		    {
 		      series.setBoolean(i, Signals.CROSS_ABOVE_SLOW_VOL_TOP, true);
 		      MarkerInfo marker = getSettings().getMarker(Slow_Band_XmarkerUP);
@@ -1066,13 +1110,13 @@ public class vrKAMAwSQ2 extends Study
 	  //Check for price below Slow Band
 	  private void checkBottomBandSlow(DataContext ctx, int i)  
 	  {
-	    DataSeries series = ctx.getDataSeries();
+		DataSeries series = ctx.getDataSeries();
 	    Double bottom = series.getDouble(i, SlowBandLines.BB3Ls);
+	    
 	    if (bottom == null) return;
 	    Coordinate c = new Coordinate(series.getStartTime(i-1), bottom);
 	    if (crossedBelow(series, i, Enums.BarInput.CLOSE, SlowBandLines.BB3Ls) 
-	    		&& !series.getBoolean(i, Signals.CROSS_BELOW_SLOW_VOL_BOTTOM, false)
-	    		&& series.getBoolean(i, SlowKamaShade.BULLPERFECTs, false)) 
+	    		&& !series.getBoolean(i, Signals.CROSS_BELOW_SLOW_VOL_BOTTOM, false))
 		    {
 		      series.setBoolean(i, Signals.CROSS_BELOW_SLOW_VOL_BOTTOM, true);
 		      MarkerInfo marker = getSettings().getMarker(Slow_Band_XmarkerDN);
@@ -1082,6 +1126,53 @@ public class vrKAMAwSQ2 extends Study
 		    }
 	  }
  
+	  //Check for "No Trend" Fast Band
+	  private void checkNoTrendFast(DataContext ctx, int i)  
+	  {
+		DataSeries series = ctx.getDataSeries();
+	    Double pricepoint = (double) series.getHigh(i);
+	    
+	    if (pricepoint == null) return;
+	    
+	    Coordinate c = new Coordinate(series.getStartTime(i), pricepoint);
+	   
+		if (!series.getBoolean(i, FastKamaShade.BULLPERFECT, false) &&  
+				!series.getBoolean(i, FastKamaShade.BEARPERFECT, false) &&
+				(series.getBoolean(i-1, FastKamaShade.BULLPERFECT, false) ||  
+				series.getBoolean(i-1, FastKamaShade.BEARPERFECT, false)))
+		  {
+		      series.setBoolean(i, Signals.NO_TREND_FAST, true);
+		      MarkerInfo marker = getSettings().getMarker(Fast_NoTrend_Marker);
+		      String msg = get("Fast Wave - No Trend", format(series.getClose(i)), format(pricepoint));
+		      if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.TOP, marker, msg));
+		      ctx.signal(i, Signals.NO_TREND_FAST, msg, round(series.getClose(i)));
+		  }
+	  }
+	  
+	  //Check for "No Trend" Slow Band
+	  private void checkNoTrendSlow(DataContext ctx, int i)  
+	  {
+		DataSeries series = ctx.getDataSeries();
+	    Double pricepoint = (double) series.getLow(i);
+	    
+	    if (pricepoint == null) return;
+	    
+	    Coordinate c = new Coordinate(series.getStartTime(i), pricepoint);
+	   
+		if (!series.getBoolean(i, SlowKamaShade.BULLPERFECTs, false) &&  
+				!series.getBoolean(i, SlowKamaShade.BEARPERFECTs, false) &&
+				(series.getBoolean(i-1, SlowKamaShade.BULLPERFECTs, false) ||  
+				series.getBoolean(i-1, SlowKamaShade.BEARPERFECTs, false)))
+		  {
+		      series.setBoolean(i, Signals.NO_TREND_SLOW, true);
+		      MarkerInfo marker = getSettings().getMarker(Slow_NoTrend_Marker);
+		      String msg = get("Slow Wave - No Trend", format(series.getClose(i)), format(pricepoint));
+		      if (marker.isEnabled()) addFigure(new Marker(c, Enums.Position.BOTTOM, marker, msg));
+		      ctx.signal(i, Signals.NO_TREND_SLOW, msg, round(series.getClose(i)));
+		  }
+	  }
+	  
+	  
 	  //Check for Deep PullBack - Bullish
 	  private void checkDeepPullBackBull(DataContext ctx, int i)
 	  {
@@ -1089,11 +1180,11 @@ public class vrKAMAwSQ2 extends Study
 
 			//Double bottom = series.getDouble(i, SlowKamaLines.KAMA1s);
 			Double bottom = round(series.getLow(i));
-		    if (bottom == null) return;
 			Coordinate c = new Coordinate(series.getStartTime(i), bottom);  
 	        if (    crossedBelow(series, i, Enums.BarInput.CLOSE, SlowKamaLines.KAMA1s)
-	            	&& series.getBoolean(i, SlowKamaShade.BULLPERFECTs, false) //current Slow Kama is Perfect
-	            	&& series.getDouble(i, SlowKamaLines.KAMA5s) > series.getDouble(i, Values.MA)) // Slowest Kama is above the 200 SMA
+	            	&& series.getBoolean(i, SlowKamaShade.BULLPERFECTs, false)  //current Slow Kama is Perfect
+	            	&& !series.getBoolean(i, Signals.DEEP_PULLBACK_BULL, false)) 
+	            	//&& series.getDouble(i, SlowKamaLines.KAMA5s) > series.getDouble(i, Values.MA)) // Slowest Kama is above the 200 SMA
 		        {	  
 	        	
 		          series.setBoolean(i, Signals.DEEP_PULLBACK_BULL, true);
@@ -1105,19 +1196,20 @@ public class vrKAMAwSQ2 extends Study
 		  
 	  } 
 	  
-	//Check for Deep PullBack - Bearish
+	  //Check for Deep PullBack - Bearish
 	  private void checkDeepPullBackBear(DataContext ctx, int i)
 	  {
 		  DataSeries series = ctx.getDataSeries();
 
 			//Double bottom = series.getDouble(i, SlowKamaLines.KAMA1s);
 			Double bottom = round(series.getHigh(i));
-		    if (bottom == null) return;
+		    //if (bottom == null) return;
 			Coordinate c = new Coordinate(series.getStartTime(i), bottom);  
 			
 	        if (    crossedAbove(series, i, Enums.BarInput.CLOSE, SlowKamaLines.KAMA1s)
-	            	&& series.getBoolean(i, SlowKamaShade.BEARPERFECTs, false) //current Slow Kama is Perfect
-	            	&& series.getDouble(i, SlowKamaLines.KAMA5s) < series.getDouble(i, Values.MA)) // Slowest Kama is below the 200 SMA
+	            	&& series.getBoolean(i, SlowKamaShade.BEARPERFECTs, false)   //current Slow Kama is Perfect
+	            	&& !series.getBoolean(i, Signals.DEEP_PULLBACK_BEAR, false)) 
+	            	//&& series.getDouble(i, SlowKamaLines.KAMA5s) < series.getDouble(i, Values.MA)) // Slowest Kama is below the 200 SMA
 		        {	  
 	        	
 		          series.setBoolean(i, Signals.DEEP_PULLBACK_BEAR, true);
@@ -1264,8 +1356,8 @@ public class vrKAMAwSQ2 extends Study
 		    for(int i = kPeriod; i <= latest; i++) {	
 		    	
 	    	Double fbStdDevs = series.std(i, fbPeriod, FastKamaLines.valueOf(kamastring));  //std dev on Kama
-	    	//Double bbStdDevma = series.getDouble(i, FastBandLines.valueOf(kamastring));
-		    Double fbStdDevma = series.ma(fbMethod, i, fbPeriod, FastKamaLines.valueOf(kamastring));  //placed statically
+	    	Double fbStdDevma = series.getDouble(i, FastKamaLines.valueOf(kamastring));
+		    //Double fbStdDevma = series.ma(fbMethod, i, fbPeriod, FastKamaLines.valueOf(kamastring));  //placed statically
 	 
 	    	if (fbStdDevs == null) fbStdDevs = 0.0;
 	    	if (fbStdDevma == null) fbStdDevma = 0.0;
@@ -1296,8 +1388,9 @@ public class vrKAMAwSQ2 extends Study
 		    series.setComplete(i, FastBandLines.FastKamaSTD, i >= 0 && i < latest);
 		    
 		    checkSqueezeFast(ctx, i);
-			//checkTopBandFast(ctx, i);
-			//checkBottomBandFast(ctx, i);
+			checkTopBandFast(ctx, i);
+			checkBottomBandFast(ctx, i);
+			checkNoTrendFast(ctx, i);
 		    }
 		  
 		    // Slow Volatility Band Calculations
@@ -1326,8 +1419,8 @@ public class vrKAMAwSQ2 extends Study
 		    for(int i = kPeriod; i <= latest; i++) {	
 		    	
 	    	Double fbStdDevs = series.std(i, fbPeriod, SlowKamaLines.valueOf(kamastring));  //std dev on Kama
-	    	//Double bbStdDevma = series.getDouble(i, FastBandLines.valueOf(kamastring));
-		    Double fbStdDevma = series.ma(fbMethod, i, fbPeriod, SlowKamaLines.valueOf(kamastring));  //placed statically
+	    	Double fbStdDevma = series.getDouble(i, SlowKamaLines.valueOf(kamastring));
+		    //Double fbStdDevma = series.ma(fbMethod, i, fbPeriod, SlowKamaLines.valueOf(kamastring));  //placed statically
 	 
 	    	if (fbStdDevs == null) fbStdDevs = 0.0;
 	    	if (fbStdDevma == null) fbStdDevma = 0.0;
@@ -1374,7 +1467,7 @@ public class vrKAMAwSQ2 extends Study
 			if (changeBarColorOut == null) changeBarColorOut = false;  //null pointer catch if required
 			if (changeBarColorOut == true ) paintBarColorOutside(ctx, i); //call method to paint bars
 			
-			
+			checkNoTrendSlow(ctx, i);
 			
 		    }
 		  
