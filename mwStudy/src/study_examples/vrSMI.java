@@ -10,6 +10,9 @@ import com.motivewave.platform.sdk.common.Enums;
 import com.motivewave.platform.sdk.common.Inputs;
 import com.motivewave.platform.sdk.common.MarkerInfo;
 import com.motivewave.platform.sdk.common.Settings;
+import com.motivewave.platform.sdk.common.Util;
+import com.motivewave.platform.sdk.common.desc.ColorDescriptor;
+import com.motivewave.platform.sdk.common.desc.DoubleDescriptor;
 import com.motivewave.platform.sdk.common.desc.GuideDescriptor;
 import com.motivewave.platform.sdk.common.desc.IndicatorDescriptor;
 import com.motivewave.platform.sdk.common.desc.InputDescriptor;
@@ -25,6 +28,9 @@ import com.motivewave.platform.sdk.draw.Marker;
 import com.motivewave.platform.sdk.study.RuntimeDescriptor;
 import com.motivewave.platform.sdk.study.Study;
 import com.motivewave.platform.sdk.study.StudyHeader;
+
+import study_examples.vrKAMAwSQ3.FastKamaLines;
+import study_examples.vrKAMAwSQ3.Values;
 
 
 /** Stochastic Momentum Index */
@@ -87,29 +93,29 @@ public class vrSMI extends Study
 	  final static String SMI_HL1_MTF = "smiHL1mtf"; //SMI MTF settings
 	  final static String SMI_MA1_MTF = "smiMA1mtf";
 	  
-	  final static String SMI_LINE1 = "smiL1";  //3/5 - SMI Line Settings
-	  final static String SMI_LINE2 = "smiL2";  //4/7
-	  final static String SMI_LINE3 = "smiL3";  //5/9
-	  final static String SMI_LINE4 = "smiL4";  //6/11
-	  final static String SMI_LINE5 = "smiL5";  //7/13
-	  final static String SMI_LINE6 = "smiL6";  //8/15
-	  final static String SMI_LINE7 = "smiL7";  //9/17
-	  final static String SMI_LINE8 = "smiL8";  //10/19
-	  final static String SMI_LINE9 = "smiL9";  //11/21
-	  final static String SMI_LINE10= "smiL10"; //12/23
-	  final static String SMI_LINE11= "smiL11"; //13/25
-	  final static String SMI_LINE12= "smiL12"; //14/27
-		final static String SMI_LINE13= "smiL13"; //15/29
-		final static String SMI_LINE14 = "smiL14"; //16/31
+	  final static String SMI_LINE1  = "smiL1";  //3/5 - SMI Line Settings
+	  final static String SMI_LINE2  = "smiL2";  //4/7
+	  final static String SMI_LINE3  = "smiL3";  //5/9
+	  final static String SMI_LINE4  = "smiL4";  //6/11
+	  final static String SMI_LINE5  = "smiL5";  //7/13
+	  final static String SMI_LINE6  = "smiL6";  //8/15
+	  final static String SMI_LINE7  = "smiL7";  //9/17
+	  final static String SMI_LINE8  = "smiL8";  //10/19
+	  final static String SMI_LINE9  = "smiL9";  //11/21
+	  final static String SMI_LINE10 = "smiL10"; //12/23
+	  final static String SMI_LINE11 = "smiL11"; //13/25
+	  final static String SMI_LINE12 = "smiL12"; //14/27
+	  final static String SMI_LINE13 = "smiL13"; //15/29
+	  final static String SMI_LINE14 = "smiL14"; //16/31
 	  final static String SMI_LINE15 = "smiL15"; //17/33
 	  final static String SMI_LINE16 = "smiL16"; //18/35
 	  final static String SMI_LINE17 = "smiL17"; //19/37
 	  final static String SMI_LINE18 = "smiL18"; //20/39
 	  final static String SMI_LINE19 = "smiL19"; //21/41
-	  final static String SMI_LINE20= "smiL20"; //22/43
-	  final static String SMI_LINE21= "smiL21"; //23/45
-	  final static String SMI_LINE22= "smiL22"; //24/47
-	  final static String SMI_LINE23= "smiL23"; //25/49
+	  final static String SMI_LINE20 = "smiL20"; //22/43
+	  final static String SMI_LINE21 = "smiL21"; //23/45
+	  final static String SMI_LINE22 = "smiL22"; //24/47
+	  final static String SMI_LINE23 = "smiL23"; //25/49
 	  
 	  final static String SMI_LINE1_MTF = "smiL1mtf"; //14/27
 	  final static String SMI_LINE2_MTF = "smiL2mtf"; //15/29
@@ -123,6 +129,20 @@ public class vrSMI extends Study
 	  final static String SMI_LINE10_MTF = "smiL10mtf"; //23/45
 	  final static String SMI_LINE11_MTF = "smiL11mtf"; //24/47
 	  final static String SMI_LINE12_MTF = "smiL12mtf"; //25/49
+	  
+      final static String LTCOLOR = "colortestlt"; //placeholder for SMI color test
+      final static String DKCOLOR = "colortestdk"; //placeholder for SMI color test
+      final static String LTRDCOLOR = "colortestltrd"; //placeholder for SMI color test
+      final static String DKRDCOLOR = "colortestdkrd"; //placeholder for SMI color test
+      final static String LTGRCOLOR = "colortestltgr"; //placeholder for SMI color test
+      final static String DKGRCOLOR = "colortestdkgr"; //placeholder for SMI color test
+      final static String DELTACOLOR = "colortestdelta"; //placeholder for SMI color test
+      final static String MAXCOLOR = "colortestmax"; //placeholder for SMI color test
+      
+      
+      final static String SMI_TOPGUIDE = "smitopguide";
+      final static String SMI_MIDDLEGUIDE = "smimidguide";
+      final static String SMI_BOTTOMGUIDE = "smibotguide";
 	  
 	  final static String HFT_BULL_MARKER = "hftBullMark"; 
 	  final static String HFT_BEAR_MARKER = "hftBearMark"; 
@@ -140,6 +160,12 @@ public class vrSMI extends Study
 	      
 	  
 	  /* Stochastic Momentum Index */
+	      ////////////////////////////////////////////////////////////////////////////////////////////////
+	    //////////          INITIALIZE SMI                                                /////////
+	     ////////////////////////////////////////////////////////////////////////////////////////////////
+	    
+	    
+	    /* Stochastic Momentum Index */
 	    
 	    SettingTab tab = new SettingTab("SMI");
 	    sd.addTab(tab);
@@ -179,7 +205,7 @@ public class vrSMI extends Study
 
 		tab.addGroup(colors4);
 		
-    tab = new SettingTab("LTF 2");
+  tab = new SettingTab("SMI2");
 			sd.addTab(tab);
 			SettingGroup colors5 = new SettingGroup("LTF SMI Line Colors");	
 
@@ -196,12 +222,12 @@ public class vrSMI extends Study
 			colors5.addRow(new PathDescriptor(SMI_LINE21, "Line 21", Color.decode("#263238"), 1.0f, null, true, true, true));
 			colors5.addRow(new PathDescriptor(SMI_LINE22, "Line 22", Color.decode("#263238"), 1.0f, null, true, true, true));
 			colors5.addRow(new PathDescriptor(SMI_LINE23, "Line 23", Color.decode("#263238"), 1.0f, null, true, true, true));
-	
+
 			tab.addGroup(colors5);
 	    
 		/*  SMI MTF Input Tab   */  /* Stochastic Momentum Index */
 
-	    tab = new SettingTab("MTF");
+	    tab = new SettingTab("HTF");
 	    sd.addTab(tab);
 	    
 		inputs = new SettingGroup("Inputs");
@@ -230,7 +256,20 @@ public class vrSMI extends Study
 		mtfcolor.addRow(new PathDescriptor(SMI_LINE11_MTF, "Line 11", Color.decode("#2C4849"), 1.0f, new float[]{4,4}, true, true, true));
 		mtfcolor.addRow(new PathDescriptor(SMI_LINE12_MTF, "Line 12", Color.decode("#233A3B"), 1.0f, new float[]{4,4}, true, true, true));
 		
+		mtfcolor.addRow(new ColorDescriptor(LTRDCOLOR,"Fast Down", Color.decode("#FFCDD2")),
+					    new ColorDescriptor(LTCOLOR,"Fast Neutral", Color.decode("#F5F5F5")),
+					    new ColorDescriptor(LTGRCOLOR,"Fast Up", Color.decode("#C8E6C9")));
+		
+		mtfcolor.addRow(new ColorDescriptor(DKRDCOLOR,"Slow Down", Color.decode("#590606")),
+			    	    new ColorDescriptor(DKCOLOR,"Slow Neutral", Color.decode("#616161")),
+			            new ColorDescriptor(DKGRCOLOR,"Slow Up", Color.decode("#003300")));
+		
+		mtfcolor.addRow(new DoubleDescriptor(DELTACOLOR, "Color Delta", 3, 0.1, 999, 0.1));
+		mtfcolor.addRow(new DoubleDescriptor(MAXCOLOR, "Max Delta", 10, 0.1, 999, 0.1));
+		
 		tab.addGroup(mtfcolor);
+		
+		
 		
 		tab = new SettingTab("Markers");
 	    sd.addTab(tab);
@@ -289,8 +328,8 @@ public class vrSMI extends Study
     desc.declarePath(SMIVal.SMI10, SMI_LINE10); 
     desc.declarePath(SMIVal.SMI11, SMI_LINE11); 
     desc.declarePath(SMIVal.SMI12, SMI_LINE12); 
-		desc.declarePath(SMIVal.SMI13, SMI_LINE13); 
-		desc.declarePath(SMIVal.SMI14, SMI_LINE14); 
+	desc.declarePath(SMIVal.SMI13, SMI_LINE13); 
+	desc.declarePath(SMIVal.SMI14, SMI_LINE14); 
     desc.declarePath(SMIVal.SMI15, SMI_LINE15); 
     desc.declarePath(SMIVal.SMI16, SMI_LINE16); 
     desc.declarePath(SMIVal.SMI17, SMI_LINE17); 
@@ -338,6 +377,91 @@ public class vrSMI extends Study
    setMinBars(3000);
   }
   
+  
+  public void smiLine (int latest, DataContext ctx, int hlPeriod, int maPeriod, SMIVal smiFinal, 
+		  SMIValD d, SMIValHL hl, SMIValD_MA dMa, SMIValHL_MA hlMa)
+  {
+	 
+	   if (latest < hlPeriod) return;
+
+	    DataSeries series = ctx.getDataSeries();
+	    double HH = series.highest(latest, hlPeriod, Enums.BarInput.HIGH);
+	    double LL = series.lowest(latest, hlPeriod, Enums.BarInput.LOW);
+	    double M = (HH + LL)/2.0;
+	    double D = series.getClose(latest) - M;
+	    
+	    series.setDouble(latest, d, D);
+	    series.setDouble(latest, hl, HH - LL);
+	    
+	    if (latest < hlPeriod + maPeriod) return;
+	    
+	    Enums.MAMethod method = getSettings().getMAMethod(Inputs.METHOD);
+	    series.setDouble(latest, dMa, series.ma(method, latest, maPeriod, d));
+	    series.setDouble(latest, hlMa, series.ma(method, latest, maPeriod, hl));
+	    
+	    int smoothPeriod= getSettings().getInteger(SMI_SMOOTH);
+	    if (latest < hlPeriod + maPeriod + smoothPeriod) return;
+	    
+	    Double D_SMOOTH = series.ma(method, latest, smoothPeriod, dMa);
+	    Double HL_SMOOTH = series.ma(method, latest, smoothPeriod, hlMa);
+	    
+	    if (D_SMOOTH == null || HL_SMOOTH == null) return;
+	    double HL2 = HL_SMOOTH/2;
+	    double SMI = 0;
+	    if (HL2 != 0) SMI = 100 * (D_SMOOTH/HL2);
+
+	    series.setDouble(latest, smiFinal, SMI);
+  }
+  
+  //Main Calculate Values Method
+  @Override
+  protected synchronized void calculateValues(DataContext ctx)
+  {	  
+	  DataSeries series = ctx.getDataSeries();
+	  int latest = series.size()-1;
+	  boolean updates = getSettings().isBarUpdates();
+	  
+  	int hlPeriod = getSettings().getInteger(SMI_HL1);
+  	int maPeriod = getSettings().getInteger(SMI_MA1);
+  	
+  	smiLine(latest, ctx, hlPeriod, maPeriod, SMIVal.SMI1, SMIValD.D1, SMIValHL.HL1, SMIValD_MA.D_MA1, SMIValHL_MA.HL_MA1);
+	  
+	  for(int i = kPeriod; i <= latest; i++) {
+	      if (series.isComplete(i, FastKamaLines.KAMA1)) continue;
+	      if (!updates && !series.isBarComplete(i)) continue;
+		  double currentKama=kamaLine(i, ctx, kPeriod, kFast, kSlow, 1); // <- KAMA Calculation
+		  series.setDouble(i, FastKamaLines.KAMA1, currentKama);  // <- Update the series for graphing
+		  series.setComplete(i, FastKamaLines.KAMA1, i >= 0 && i < latest); // bars are set to complete
+	  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  }	  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /*
   @Override  
   protected void calculate(int index, DataContext ctx)
   {
@@ -549,7 +673,7 @@ public class vrSMI extends Study
 	           
 	        
     series.setComplete(index); 
-  }
+  } */
 
  
   
