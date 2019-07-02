@@ -425,7 +425,7 @@ public class vrSMI extends Study
   	int maPeriod = getSettings().getInteger(SMI_MA1);
   	
   	smiLine(latest, ctx, hlPeriod, maPeriod, SMIVal.SMI1, SMIValD.D1, SMIValHL.HL1, SMIValD_MA.D_MA1, SMIValHL_MA.HL_MA1);
-	  
+	  //need to test
 	  for(int i = kPeriod; i <= latest; i++) {
 	      if (series.isComplete(i, FastKamaLines.KAMA1)) continue;
 	      if (!updates && !series.isBarComplete(i)) continue;
